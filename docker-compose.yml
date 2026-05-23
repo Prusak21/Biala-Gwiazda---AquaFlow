@@ -1,0 +1,31 @@
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: aquaflow_db
+    environment:
+      POSTGRES_USER: aquaflow_user
+      POSTGRES_PASSWORD: secretpassword
+      POSTGRES_DB: aquaflow_database
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  web:
+    build: .
+    container_name: aquaflow_web
+    ports:
+      - "8080:8080" 
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - .env
+    depends_on:
+      - db
+    environment:
+      - DATABASE_URL=postgres://aquaflow_user:secretpassword@db:5432/aquaflow_database
+
+volumes:
+  db_data:
