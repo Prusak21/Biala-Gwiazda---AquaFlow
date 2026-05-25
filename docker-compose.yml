@@ -1,5 +1,6 @@
 services:
   db:
+    platform: linux/amd64
     image: postgis/postgis:15-3.3
     container_name: aquaflow_db
     environment:
@@ -10,6 +11,8 @@ services:
       - "5432:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/01_init.sql
+      - ./seed.sql:/docker-entrypoint-initdb.d/02_seed.sql
     restart: unless-stopped
 
   web:
