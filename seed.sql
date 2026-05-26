@@ -34,11 +34,11 @@ INSERT INTO role_permissions (role_id, permission_id) VALUES
 
 -- 4. UŻYTKOWNICY (Hasło dla wszystkich to: haslo123)
 INSERT INTO users (email, password_hash, role_id) VALUES 
-('dyrektor@aquaflow.jaworzno.pl', '$2a$12$R9h/cIPz0gi.URNNX3cl2upox9hD1Myd/Dq0X/H8U9R0/1o8y5p.O', 1),
-('inkasent.terenowy@aquaflow.jaworzno.pl', '$2a$12$R9h/cIPz0gi.URNNX3cl2upox9hD1Myd/Dq0X/H8U9R0/1o8y5p.O', 2),
-('jan.nowak@gmail.com', '$2a$12$R9h/cIPz0gi.URNNX3cl2upox9hD1Myd/Dq0X/H8U9R0/1o8y5p.O', 3),     -- ID 3
-('anna.kowalska@gmail.com', '$2a$12$R9h/cIPz0gi.URNNX3cl2upox9hD1Myd/Dq0X/H8U9R0/1o8y5p.O', 3), -- ID 4
-('piotr.wisniewski@gmail.com', '$2a$12$R9h/cIPz0gi.URNNX3cl2upox9hD1Myd/Dq0X/H8U9R0/1o8y5p.O', 3); -- ID 5
+('dyrektor@aquaflow.jaworzno.pl', '$2b$12$i7NNiO4Dwb8kGeS/MlrExOggVwZ8v2RXfcqrPHz57enzIMlvXmlSm', 1), -- ID 1
+('inkasent.terenowy@aquaflow.jaworzno.pl', '$2b$12$i7NNiO4Dwb8kGeS/MlrExOggVwZ8v2RXfcqrPHz57enzIMlvXmlSm', 2),  -- ID 2
+('jan.nowak@gmail.com', '$2b$12$i7NNiO4Dwb8kGeS/MlrExOggVwZ8v2RXfcqrPHz57enzIMlvXmlSm', 3),     -- ID 3
+('anna.kowalska@gmail.com', '$2b$12$i7NNiO4Dwb8kGeS/MlrExOggVwZ8v2RXfcqrPHz57enzIMlvXmlSm', 3), -- ID 4
+('piotr.wisniewski@gmail.com', '$2b$12$i7NNiO4Dwb8kGeS/MlrExOggVwZ8v2RXfcqrPHz57enzIMlvXmlSm', 3); -- ID 5
 
 -- 5. TARYFIKATOR WODY (Dla testowania logiki księgowej)
 INSERT INTO water_rates (name, price_per_m3, valid_from, valid_to) VALUES 
