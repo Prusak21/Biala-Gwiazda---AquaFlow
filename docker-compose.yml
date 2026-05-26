@@ -1,12 +1,12 @@
 services:
   db:
     platform: linux/amd64
-    image: postgis/postgis:15-3.3
+    image: postgis/postgis:16-3.4
     container_name: aquaflow_db
     environment:
-      POSTGRES_USER: aquaflow_user
-      POSTGRES_PASSWORD: secretpassword
-      POSTGRES_DB: aquaflow_database
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
     ports:
       - "5432:5432"
     volumes:
@@ -28,7 +28,7 @@ services:
     depends_on:
       - db
     environment:
-      - DATABASE_URL=postgres://aquaflow_user:secretpassword@db:5432/aquaflow_database
+      - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
 
 volumes:
   db_data:

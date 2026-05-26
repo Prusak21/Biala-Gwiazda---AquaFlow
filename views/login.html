@@ -8,20 +8,35 @@
 <body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
     <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
         <h3 class="text-center mb-4 text-primary">Logowanie</h3>
-       <form action="/zaloguj" method="POST">
-    <div class="mb-3">
-        <label class="form-label">Adres e-mail</label>
-        <input type="email" name="email" class="form-control" placeholder="jan@kowalski.pl" required>
-    </div>
-    <div class="mb-3">
-        <label class="form-label">Hasło</label>
-        <input type="password" name="haslo" class="form-control" placeholder="****" required>
-    </div>
-    <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
-</form>
+        
+        <div id="error-alert" class="alert alert-danger d-none text-center" role="alert">
+            Nieprawidłowy adres e-mail lub hasło.
+        </div>
+
+        <form action="/zaloguj" method="POST">
+            <div class="mb-3">
+                <label class="form-label">Adres e-mail</label>
+                <input type="email" name="email" class="form-control" placeholder="jan@kowalski.pl" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">Hasło</label>
+                <input type="password" name="haslo" class="form-control" placeholder="****" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
+        </form>
+        
         <div class="mt-3 text-center">
             <a href="/" class="text-decoration-none">Wróć na stronę główną</a>
         </div>
     </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.get('error') === '1') {
+            document.getElementById('error-alert').classList.remove('d-none');
+            // Czyści pasek adresu, żeby błąd nie wisiał po odświeżeniu
+            window.history.replaceState({}, document.title, "/logowanie");
+        }
+    </script>
 </body>
 </html>

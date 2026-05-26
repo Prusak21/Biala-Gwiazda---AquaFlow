@@ -1,21 +1,27 @@
+require('dotenv').config(); // Ładowanie zmiennych z pliku .env
 const express = require('express');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const cookieParser = require('cookie-parser');
+const { Pool } = require('pg'); // Sterownik PostgreSQL
+const bcrypt = require('bcryptjs'); // Biblioteka do hashowania haseł
 
 const app = express();
 const port = 8080;
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET || 'zapasowy_sekret_dla_testow_lokalnych';
+
+// --- POŁĄCZENIE Z BAZĄ DANYCH ---
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL
+});
+
+pool.connect()
+    .then(() => console.log('✅ Połączono z bazą PostgreSQL (AquaFlow)!'))
+    .catch(err => console.error('❌ Błąd połączenia z bazą:', err));
 
 app.use(express.urlencoded({ extended: true }));
+app.use(express.json()); // Pozwala czytać zapytania JSON z frontendu
 app.use(cookieParser());
-
-// --- MOCK BAZY DANYCH ---
-const mockUsers = [
-    { id: 1, email: 'jan@kowalski.pl', haslo: '1234', isAdmin: false, isTechnician: false },
-    { id: 2, email: 'admin@urzad.pl', haslo: 'admin1', isAdmin: true, isTechnician: false },
-    { id: 3, email: 'technik@wodociagi.pl', haslo: 'tech123', isAdmin: false, isTechnician: true }
-];
 
 // --- STRAŻNICY (Middlewares) ---
 const weryfikujToken = (req, res, next) => {
@@ -40,16 +46,49 @@ app.get('/cennik', (req, res) => res.sendFile(path.join(__dirname, 'views', 'cen
 app.get('/komunikaty', (req, res) => res.sendFile(path.join(__dirname, 'views', 'komunikaty-gosc.html')));
 app.get('/logowanie', (req, res) => res.sendFile(path.join(__dirname, 'views', 'login.html')));
 
-app.post('/zaloguj', (req, res) => {
-    const user = mockUsers.find(u => u.email === req.body.email && u.haslo === req.body.haslo);
-    if (user) {
-        const token = jwt.sign({ id: user.id, email: user.email, isAdmin: user.isAdmin, isTechnician: user.isTechnician }, JWT_SECRET, { expiresIn: '2h' });
+// --- PRAWDZIWE LOGOWANIE Z BAZY DANYCH (Z DETEKTYWEM) ---
+app.post('/zaloguj', async (req, res) => {
+    const { email, haslo } = req.body;
+
+    try {
+        // 1. Szukamy użytkownika w bazie
+        const result = await pool.query('SELECT * FROM users WHERE email = $1 AND is_active = TRUE', [email]);
+        
+        if (result.rows.length === 0) {
+            return res.redirect('/logowanie?error=1'); 
+        }
+
+        const user = result.rows[0];
+
+        // 2. Porównujemy wpisane hasło z hashem z bazy
+        const isMatch = await bcrypt.compare(haslo, user.password_hash);
+        
+        if (!isMatch) {
+            return res.redirect('/logowanie?error=1'); 
+        }
+
+        // 3. Mapowanie ról z bazy (1 = Admin, 2 = Inkasent, 3 = Mieszkaniec)
+        const isAdmin = user.role_id === 1;
+        const isTechnician = user.role_id === 2;
+
+        // 4. Generowanie Tokena
+        const token = jwt.sign(
+            { id: user.id, email: user.email, isAdmin, isTechnician }, 
+            JWT_SECRET, 
+            { expiresIn: '2h' }
+        );
+
         res.cookie('token', token, { httpOnly: true, maxAge: 2 * 60 * 60 * 1000 });
-        if (user.isAdmin) return res.redirect('/admin');
-        if (user.isTechnician) return res.redirect('/technik');
+
+        // 5. Przekierowanie w zależności od roli
+        if (isAdmin) return res.redirect('/admin');
+        if (isTechnician) return res.redirect('/technik');
         return res.redirect('/ebok');
+
+    } catch (err) {
+        console.error('Błąd serwera podczas logowania:', err);
+        res.status(500).send('Błąd wewnętrzny serwera');
     }
-    res.redirect('/logowanie');
 });
 
 // ==========================================
