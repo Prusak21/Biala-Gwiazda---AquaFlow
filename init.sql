@@ -22,9 +22,14 @@ CREATE TABLE users (
     id SERIAL PRIMARY KEY,
     email VARCHAR(255) UNIQUE NOT NULL,
     password_hash TEXT NOT NULL,
-    role_id INT REFERENCES roles(id) ON DELETE RESTRICT,
-    is_active BOOLEAN DEFAULT TRUE,
+    status VARCHAR(20) DEFAULT 'pending' CHECK (status IN ('pending', 'active', 'suspended')),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE user_roles (
+    user_id INT REFERENCES users(id) ON DELETE CASCADE,
+    role_id INT REFERENCES roles(id) ON DELETE CASCADE,
+    PRIMARY KEY (user_id, role_id)
 );
 
 CREATE TABLE announcements (
