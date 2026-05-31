@@ -1,16 +1,148 @@
 <!DOCTYPE html>
-<html lang="pl"><body>
-    <h1>Pulpit e-BOK</h1><p>Jesteś: Mieszkaniec zalogowany</p>
-    <p style="color:red">Alert: Zbyt wysokie zużycie wody od ostatniego logowania!</p>
-    <ul>
-        <li><a href="/ebok/cennik">Cennik</a></li>
-        <li><a href="/ebok/komunikaty">Aktualności / Komunikaty</a></li>
-        <li><a href="/ebok/odczyt">Odczyt Licznika</a></li>
-        <li><a href="/ebok/historia">Historia Zużycia i Rachunków</a></li>
-        <li><a href="/ebok/faktury">e-Faktury i Płatności</a></li>
-        <li><a href="/ebok/awarie">Zgłaszanie Awarii</a></li>
-        <li><a href="/ebok/archiwum">Archiwum Awarii</a></li>
-        <li><a href="/ebok/lojalnosc">Program Lojalnościowy</a></li>
-    </ul>
-    <a href="/wyloguj">Wyloguj</a>
-</body></html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - e-BOK</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 18px;
+            display: inline-block;
+            font-size: 14px;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .alert {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+        .user-badge {
+            background: #27ae60;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .menu-grid {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+        .menu-card {
+            background: white;
+            padding: 20px 15px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 140px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .menu-card:hover {
+            background: #e8f0fe;
+        }
+        .menu-card .icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 8px;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <h1>Pulpit e-BOK</h1><p>Jesteś: Mieszkaniec zalogowany</p>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="alert">
+        <p style="color:red">Alert: Zbyt wysokie zużycie wody od ostatniego logowania!</p>
+        </div>
+
+        <div class="menu-grid">
+            <a href="/ebok/cennik" class="menu-card">Cennik</a>
+            <a href="/ebok/komunikaty" class="menu-card">Aktualności / Komunikaty</a>
+            <a href="/ebok/odczyt" class="menu-card">Odczyt Licznika</a>
+            <a href="/ebok/historia" class="menu-card">Historia Zużycia i rachunków</a>
+            <a href="/ebok/faktury" class="menu-card">e-Faktury i Płatności</a>
+            <a href="/ebok/awarie" class="menu-card">Zgłaszanie Awarii</a>
+            <a href="/ebok/archiwum" class="menu-card">Archiwum Awarii</a>
+            <a href="/ebok/lojalnosc" class="menu-card">Program Lojalnościowy</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+</body>
+</html>

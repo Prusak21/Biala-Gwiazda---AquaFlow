@@ -144,3 +144,5 @@ app.get('/wyloguj', (req, res) => {
 });
 
 app.listen(port, () => console.log(`Serwer śmiga na porcie ${port}`));
+
+app.use(express.static(path.join(__dirname, 'views')));

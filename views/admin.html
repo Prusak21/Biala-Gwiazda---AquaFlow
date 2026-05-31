@@ -1,12 +1,182 @@
 <!DOCTYPE html>
-<html lang="pl"><body>
-    <h1>Pulpit Zarządczy</h1><p>Jesteś: Admin / Urzędnik</p>
-    <ul>
-        <li><a href="/admin/uzytkownicy">Użytkownicy i Role</a></li>
-        <li><a href="/admin/biling">Moduł Bilingowy</a></li>
-        <li><a href="/admin/analityka">Moduł Analityki</a></li>
-        <li><a href="/admin/mapa">Mapa GIS</a></li>
-        <li><a href="/admin/komunikacja">Komunikacja</a></li>
-    </ul>
-    <a href="/wyloguj">Wyloguj</a>
-</body></html>
+<html lang="pl">
+<head>
+     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Panel Administratora</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: inline-block;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .admin-badge {
+            background: #e74c3c;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .stat-card h2 {
+            font-size: 36px;
+            color: #1a5276;
+        }
+        .menu-grid {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin: 30px 0;
+        }
+        .menu-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            flex: 1;
+            min-width: 180px;
+            text-align: center;
+            text-decoration: none;
+            color: #333;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .menu-card:hover {
+            background: #e8f0fe;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - Panel Administratora</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+    <div class="nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/uzytkownicy">Użytkownicy i Role</a>
+        <a href="/admin/biling">Moduł Bilingowy</a>
+        <a href="/admin/analityka">Moduł Analityki</a>
+        <a href="/admin/mapa">Mapa GIS</a>
+        <a href="/admin/komunikacja">Komunikacja</a>
+
+    </div>
+
+    <div class="container">
+        <div class="admin-badge">Jesteś: Admin / Urzędnik</div>
+        <div class="stats">
+            <div class="stat-card">
+                <h2>156</h2>
+                <p>Użytkowników</p>
+            </div>
+            <div class="stat-card">
+                <h2>28 450</h2>
+                <p>m³ zużycia</p>
+            </div>
+            <div class="stat-card">
+                <h2>3</h2>
+                <p>Aktywne awarie</p>
+            </div>
+            <div class="stat-card">
+                <h2>12 580 zł</h2>
+                <p>Należności</p>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <a href="/admin/uzytkownicy" class="menu-card">Użytkownicy i Role</a>
+            <a href="/admin/biling" class="menu-card">Moduł Bilingowy</a>
+            <a href="/admin/analityka" class="menu-card">Moduł Analityki</a>
+            <a href="/admin/mapa" class="menu-card">Mapa GIS</a>
+            <a href="/admin/komunikacja" class="menu-card">Komunikacja</a>
+        </div>
+
+        <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+            <h3>Ostatnie aktywności</h3>
+            <ul style="margin-top: 15px; list-style: none;">
+                <li style="padding: 10px 0; border-bottom: 1px solid #ddd;">✅ Nowy użytkownik zarejestrowany</li>
+                <li style="padding: 10px 0; border-bottom: 1px solid #ddd;">⚠️ Zgłoszono nową awarię</li>
+                <li style="padding: 10px 0;">Wystawiono 5 faktur</li>
+            </ul>
+        </div>
+    </div>
+
+     <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+    </div>
+
+    <div style="display:none;">
+        <h1>Pulpit Zarządczy</h1>
+        <p>Jesteś: Admin / Urzędnik</p>
+        <ul>
+            <li><a href="/admin/uzytkownicy">Użytkownicy i Role</a></li>
+            <li><a href="/admin/biling">Moduł Bilingowy</a></li>
+            <li><a href="/admin/analityka">Moduł Analityki</a></li>
+            <li><a href="/admin/mapa">Mapa GIS</a></li>
+            <li><a href="/admin/komunikacja">Komunikacja</a></li>
+        </ul>
+        <a href="/wyloguj">Wyloguj</a>
+    </div>
+    
+</body>
+</html>

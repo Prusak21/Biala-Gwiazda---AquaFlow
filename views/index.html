@@ -1,9 +1,177 @@
 <!DOCTYPE html>
-<html lang="pl"><body>
-    <h1>Strona Główna</h1><p>Jesteś: Gość niezalogowany</p>
-    <ul>
-        <li><a href="/cennik">Cennik usług</a></li>
-        <li><a href="/komunikaty">Aktualności / Komunikaty</a></li>
-        <li><a href="/logowanie">Logowanie / Rejestracja</a></li>
-    </ul>
-</body></html>
+<html lang="pl">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>AquaFlow - System Gospodarki Wodnej</title>
+        <style>
+            *{
+                margin: 0;
+                padding:0;
+                box-sizing: border-box;
+            }
+            body {
+                font-family: Arial, Helvetica, sans-serif;
+                background: #f5f5f5;
+            }
+            .header {
+                background: #1a5276;
+                color: white;
+                padding: 40px;
+                text-align: center;
+            }
+            .header h1 {
+                font-size: 42px;
+                margin-bottom: 10px;
+            }
+            .nav {
+                background: white;
+                padding: 15px;
+                text-align: center;
+                border-bottom: 1px solid #ddd;
+            }
+            .nav a {
+                color: #1a5276;
+                text-decoration: none;
+                margin: 0 20px;
+                font-weight: bold;
+            }
+            .nav a:hover {
+                text-decoration: underline;
+            }
+            .container {
+                max-width: 1100px;
+                margin: 40px auto;
+                padding: 0 20px;
+            }
+            .info-box {
+                background: #e8f0fe;
+                padding: 20px;
+                border-radius: 10px;
+                margin-bottom: 30px;
+                text-align: center;
+                border-left: 5px solid #1a5276;
+            }
+            .features {
+                display: flex;
+                gap: 20px;
+                flex-wrap: wrap;
+                margin: 30px 0;
+            }
+            .card {
+                background: white;
+                padding: 25px;
+                border-radius: 10px;
+                flex: 1;
+                min-width: 250px;
+                box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+                text-align: center;
+            }
+            .card h3 {
+                color: #1a5276;
+                margin: 15px 0 10px;
+            }
+            .icon {
+                font-size: 50px;
+            }
+            .btn {
+                background: #1a5276;
+                color: white;
+                padding: 12px 30px;
+                text-decoration: none;
+                border-radius: 5px;
+                display: inline-block;
+                margin-top: 10px;
+            }
+            .footer {
+                background: #1a5276;
+                color: white;
+                text-align: center;
+                padding: 25px;
+                margin-top: 50px;
+            }
+            .guest-badge {
+                background: #ffc107;
+                color: #333;
+                display: inline-block;
+                padding: 5px 15px;
+                border-radius: 20px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+        <h1>💧 AquaFlow</h1>
+    </div>
+
+    <div class="nav">
+        <a href="/">Strona główna</a>
+        <a href="/cennik">Cennik</a>
+        <a href="/komunikaty">Komunikaty</a>
+        <a href="/logowanie">Zaloguj się</a>
+    </div>
+
+    <div class="container">
+        <div class="info-box">
+            <span class="guest-badge">Gość niezalogowany</span>
+            <p style="margin-top: 15px;">Witamy na stronie AquaFlow! Zaloguj się aby uzyskać dostęp do swojego konta e-BOK.</p>
+        </div>
+
+        <div class="features">
+            <div class="card">
+                <div class="icon">📊</div>
+                <h3>Bilansowanie wody</h3>
+                <p>Automatyczne wykrywanie strat w sieci wodociągowej.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🗺️</div>
+                <h3>Mapa interaktywna</h3>
+                <p>Lokalizacja awarii i liczników na mapie.</p>
+            </div>
+            <div class="card">
+                <div class="icon">📱</div>
+                <h3>e-BOK dla mieszkańców</h3>
+                <p>Sprawdzanie faktur i zgłaszanie awarii online.</p>
+            </div>
+            <div class="card">
+                <div class="icon">🔧</div>
+                <h3>Panel technika</h3>
+                <p>Wprowadzanie odczytów w terenie.</p>
+            </div>
+            <div class="card">
+                <div class="icon">👨‍💼</div>
+                <h3>Panel administratora</h3>
+                <p>Zarządzanie użytkownikami i fakturami.</p>
+            </div>
+            <div class="card">
+                <div class="icon">💰</div>
+                <h3>Automatyczne faktury</h3>
+                <p>Generowanie na podstawie odczytów.</p>
+            </div>
+        </div>
+
+         <div style="text-align: center; background: white; padding: 30px; border-radius: 10px;">
+            <h3>Masz już konto?</h3>
+            <a href="/logowanie" class="btn">Zaloguj się</a>
+            <p style="margin-top: 15px; font-size: 14px; color: #666;">Nie masz konta? Skontaktuj się z administratorem.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <div style="display:none;">
+        <h1>Strona Główna</h1>
+        <p>Jesteś: Gość niezalogowany</p>
+        <ul>
+            <li><a href="/cennik">Cennik usług</a></li>
+            <li><a href="/komunikaty">Aktualności / Komunikaty</a></li>
+            <li><a href="/logowanie">Logowanie / Rejestracja</a></li>
+        </ul>
+    </div>
+</body>
+</html>

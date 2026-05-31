@@ -1,1 +1,89 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Wprowadzanie i Weryfikacja Odczytów</h1><p>Jesteś: Technik</p><a href="/technik">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Wprowadzanie Odczytów</title>
+    <link rel="stylesheet" href="/style.css">
+    
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Wprowadzanie Odczytów</h1>
+       <a href="/logowanie" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/technik">Dashboard</a>
+        <a href="/technik/mapa">Mapa Tras Odczytowych</a>
+        <a href="/technik/klienci">Lista Adresów / Klienci</a>
+        <a href="/technik/wprowadz">Wprowadzanie Odczytów</a>
+        <a href="/technik/raportuj" style="background: #1a5276;">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section">
+            <form id="odczytForm" onsubmit="wyslijOdczyt(event)">
+                <div class="form-group">
+                    <label>Numer Licznika / Adres:</label>
+                    <select id="adresSelect" required>
+                        <option value="">Ładowanie adresów z bazy...</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Stan licznika (m³):</label>
+                    <input type="number" id="stanLicznika" step="0.01" placeholder="Wpisz odczyt w m³" required>
+                </div>
+                <button type="submit" class="btn-submit">Zapisz odczyt</button>
+            </form>
+        </div>
+        
+        <a href="technik.html" class="btn-back">← Wróć</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>Wsparcie IT dla pracowników: it@aquaflow.jaworzno.pl | 32 123 45 99</p>
+    </div>
+    
+      <script>
+        async function loadAddresses() {
+            const select = document.getElementById('adresSelect');
+            try {
+                const response = await fetch('/api/tech/addresses');
+                if (!response.ok) throw new Error('');
+                
+                const addresses = await response.json();
+                let html = '<option value="">Wybierz z listy...</option>';
+                
+                addresses.forEach(a => {
+                    html += `<option value="${a.id}">${a.adres} (${a.licznik})</option>`;
+                });
+                
+                select.innerHTML = html;
+            } catch (error) {
+                select.innerHTML = `
+                    <option value="">Wybierz z listy...</option>
+                    <option value="1">ul. Polna 12 (WM-001)</option>
+                    <option value="2">ul. Mickiewicza 14 (WM-002)</option>
+                    <option value="3">ul. Słowackiego 5 (WM-003)</option>
+                `;
+            }
+        }
+
+        function wyslijOdczyt(event) {
+            event.preventDefault();
+            const adres = document.getElementById('adresSelect');
+            const stan = document.getElementById('stanLicznika').value;
+            const wybranyTekst = adres.options[adres.selectedIndex].text;
+            
+            alert('Odczyt dla: ' + wybranyTekst + '\\nStan: ' + stan + ' m³\\nZapisano pomyślnie w systemie!');
+            document.getElementById('odczytForm').reset();
+        }
+
+        loadAddresses();
+    </script>
+</body>
+</html>

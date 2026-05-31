@@ -1,1 +1,59 @@
-<!DOCTYPE html><html lang="pl"><body><h1>e-Faktury i Płatności</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - e-Faktury i Płatności</title>
+    <link rel="stylesheet" href="/style.css">
+   
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+         <a href="/logowanie" class="logout-btn">Wyloguj</a>
+    </div>
+
+     <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="section">
+            <h2 class="page-title">Twoje Faktury</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Numer Faktury</th>
+                        <th>Okres rozliczeniowy</th>
+                        <th>Kwota</th>
+                        <th>Termin płatności</th>
+                        <th>Status</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody id="faktury-tbody">
+                </tbody>
+            </table>
+        </div>
+
+        <a href="ebok.html" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+   
+</body>
+</html>

@@ -1,1 +1,76 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Cennik e-BOK</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Cennik</title>
+    <link rel="stylesheet" href="/style.css">
+
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+     <a href="/logowanie" class="logout-btn">Wyloguj</a>
+    </div>
+
+      <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="info-box">
+            <strong>Informacja:</strong> Ceny netto, do których doliczony jest podatek VAT 8%.
+        </div>
+        
+        <table id="cennikTable">
+            <thead>
+                <tr>
+                    <th>Taryfa</th>
+                    <th>Cena za m³</th>
+                    <th>Okres</th>
+                </tr>
+            </thead>
+            <tbody id="taryfyBody">
+                <tr>
+                    <td colspan="3" class="brak">Ładowanie cen...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Opłata</th>
+                    <th>Kwota</th>
+                </tr>
+            </thead>
+            <tbody id="oplatyBody">
+                <tr>
+                    <td colspan="2" class="brak">Ładowanie</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="dataModyfikacji" class="data-modyfikacji"></div>
+        
+        <a href="ebok.html" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+ 
+</body>
+</html>

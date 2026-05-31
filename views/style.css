@@ -1,0 +1,428 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f6f9;
+    color: #333;
+}
+
+/* uklad */
+.container, .box, .main {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 0 20px;
+    min-height: 400px;
+}
+
+.section {
+    background: white;
+    padding: 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 25px;
+}
+
+.page-title, .section-title {
+    color: #1a5276;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #ffc107;
+    padding-bottom: 10px;
+    font-size: 22px;
+}
+
+/* nagloowek i nawigacja */
+.header {
+    background: #1a5276;
+    color: white;
+    padding: 20px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.header h1 {
+    font-size: 24px;
+}
+
+.nav {
+    background: #2c3e50;
+    padding: 0;
+    display: flex;
+    overflow-x: auto;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    padding: 15px 18px;
+    display: inline-block;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+.nav a:hover, .nav a.active {
+    background: #1a5276;
+}
+
+.footer {
+    background: #1a5276;
+    color: white;
+    text-align: center;
+    padding: 25px;
+    margin-top: 50px;
+}
+
+/* przyciski i etykiety */
+button, .btn, .btn-acc, .btn-submit, .action-btn {
+    background-color: #2980b9;
+    color: white;
+    border: none;
+    padding: 12px 25px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.2s;
+    font-size: 15px;
+    text-decoration: none;
+    display: inline-block;
+}
+
+button:hover, .btn:hover, .btn-submit:hover, .action-btn:hover {
+    background-color: #1f5f8a;
+}
+
+.logout-btn {
+    background: #e74c3c;
+    color: white;
+    padding: 8px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.btn-back {
+    background: #6c757d;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 20px;
+}
+
+.user-badge, .admin-badge {
+    color: white;
+    display: inline-block;
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 14px;
+    margin-bottom: 20px;
+    font-weight: bold;
+    background: #27ae60;
+}
+
+.user-badge.technik {
+    background: #f39c12;
+}
+
+.admin-badge {
+    background: #e74c3c;
+}
+
+/* formularze */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: #333;
+}
+
+input, textarea, select {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-family: inherit;
+    box-sizing: border-box;
+    background: #f8fafc;
+}
+
+textarea {
+    resize: vertical;
+    min-height: 100px;
+}
+
+.file-drop-area {
+    display: block;
+    border: 2px dashed #cbd5e1;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+    color: #64748b;
+    cursor: pointer;
+    background: #f8fafc;
+    transition: all 0.2s ease;
+}
+
+.file-drop-area:hover {
+    border-color: #3498db;
+    background: #f1f5f9;
+}
+
+.file-input {
+    display: none;
+}
+
+/* tabele */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    margin-top: 15px;
+}
+
+th, td {
+    padding: 14px 18px;
+    text-align: left;
+    border-bottom: 1px solid #edf2f7;
+}
+
+th {
+    background-color: #1a5276;
+    color: white;
+    font-weight: 600;
+}
+
+/* --- STATUSY --- */
+.status-ok, .status-paid, .status-naprawione { color: #27ae60; font-weight: bold; }
+.status-brak, .status-unpaid { color: #e74c3c; font-weight: bold; }
+.status-wtrakcie, .status-pending { color: #f39c12; font-weight: bold; }
+
+/* --- KOMUNIKATY I ALERTY --- */
+.info-box {
+    background: #e8f0fe;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 4px solid #1a5276;
+    line-height: 1.5;
+}
+
+.komunikat {
+    background: #f9f9f9;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    border-left: 5px solid #ffc107;
+}
+
+.alert {
+    background: #fde8e8;
+    border-left: 5px solid #e74c3c;
+    padding: 15px;
+    border-radius: 4px;
+    margin-bottom: 20px;
+    color: #c0392b;
+    font-weight: bold;
+}
+
+/* menu */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.menu-card {
+    background: white;
+    padding: 30px 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    text-align: center;
+    text-decoration: none;
+    color: #1a5276;
+    font-weight: bold;
+    font-size: 16px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #edf2f7;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+    background: #1a5276;
+    color: white;
+}
+
+/* dashboard*/
+.dashboard-grid, .stats {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+}
+
+.stat-card {
+    flex: 1;
+    min-width: 200px;
+    background: #f8fafc;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 25px;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.stat-card h2, .stat-card h3 {
+    color: #1a5276;
+}
+
+.stat-card h2 {
+    font-size: 32px;
+    margin-top: 10px;
+}
+
+.loss {
+    color: #e74c3c !important;
+}
+
+/* program lojalnosciowy */
+.loyalty-dashboard {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+.points-circle {
+    background: #1a5276;
+    color: white;
+    width: 150px;
+    height: 150px;
+    min-width: 150px;
+    border-radius: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    border: 5px solid #ffc107;
+}
+
+.points-circle h2 {
+    font-size: 38px;
+    margin: 0;
+    color: white;
+}
+
+.points-circle span {
+    font-size: 14px;
+    text-transform: uppercase;
+}
+
+.progress-container {
+    flex: 1;
+    width: 100%;
+}
+
+.level-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #2c3e50;
+}
+
+.progress-bar-bg {
+    background: #e9ecef;
+    height: 20px;
+    border-radius: 10px;
+    overflow: hidden;
+    width: 100%;
+}
+
+.progress-bar-fill {
+    background: linear-gradient(90deg, #3498db, #2ecc71);
+    height: 100%;
+    transition: width 1s ease-in-out;
+}
+
+.rewards-grid {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.reward-card {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1;
+    min-width: 250px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.reward-icon {
+    font-size: 40px;
+    margin-bottom: 15px;
+}
+
+.reward-title {
+    color: #1a5276;
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.reward-cost {
+    color: #e74c3c;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 15px;
+}
+
+.redeem-btn {
+    background: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    margin-top: auto;
+}
+
+.redeem-btn:disabled {
+    background: #bdc3c7;
+    cursor: not-allowed;
+    color: #666;
+}
+
+
+/* --- MAPA --- */
+#map {
+    height: 500px;
+    width: 100%;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    z-index: 1;
+}

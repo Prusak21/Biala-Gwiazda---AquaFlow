@@ -1,2 +1,75 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Raportowanie Awarii</title>
+    <link rel="stylesheet" href="/style.css">
+    
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Raportowanie Awarii</h1>
+          <a href="/logowanie" class="logout-btn">Wyloguj</a>
+    </div>
 
-<!DOCTYPE html><html lang="pl"><body><h1>Zgłoś Awarię w Terenie (+ Foto i Pinezka)</h1><p>Jesteś: Technik</p><a href="/technik">Wróć</a></body></html>
+    <div class="nav">
+        <a href="/technik">Dashboard</a>
+        <a href="/technik/mapa">Mapa Tras Odczytowych</a>
+        <a href="/technik/klienci">Lista Adresów / Klienci</a>
+        <a href="/technik/wprowadz">Wprowadzanie Odczytów</a>
+        <a href="/technik/raportuj" style="background: #1a5276;">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section">
+            <form onsubmit="event.preventDefault(); alert('Awaria zgłoszona! Koordynaty i zdjęcia zostały przesłane do systemu.'); this.reset();">
+                
+                <div class="form-group">
+                    <label>Lokalizacja (Adres lub Koordynaty GPS):</label>
+                    <input type="text" placeholder="Wpisz adres..." required>
+                    <button type="button" class="gps-btn" onclick="alert('Pobieranie bieżącej lokalizacji GPS z urządzenia...')">📍 Pobierz moją lokalizację</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Rodzaj usterki:</label>
+                    <select required>
+                        <option value="">Wybierz z listy...</option>
+                        <option>Uszkodzony wodomierz</option>
+                        <option>Zerwana plomba</option>
+                        <option>Wyciek / pęknięta rura</option>
+                        <option>Nielegalne przyłącze</option>
+                        <option>Inne</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Szczegółowy opis z terenu:</label>
+                    <textarea placeholder="Opisz dokładnie sytuację..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Dokumentacja zdjęciowa:</label>
+                    <label class="file-drop-area">
+                        <input type="file" class="file-input" accept="image/*" required>
+                        📸 Kliknij, aby zrobić zdjęcie lub wgrać z telefonu
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">Wyślij Raport do Centrali</button>
+            </form>
+        </div>
+        
+        <a href="technik.html" class="btn-back">← Wróć</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>Wsparcie IT dla pracowników: it@aquaflow.jaworzno.pl | 32 123 45 99</p>
+    </div>
+    
+    <script src="main.js"></script>
+</body>
+</html>

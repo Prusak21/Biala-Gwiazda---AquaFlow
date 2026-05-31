@@ -1,11 +1,59 @@
 <!DOCTYPE html>
-<html lang="pl"><body>
-    <h1>Pulpit Inkasenta</h1><p>Jesteś: Pracownik Mobilny</p>
-    <ul>
-        <li><a href="/technik/mapa">Mapa Tras Odczytowych</a></li>
-        <li><a href="/technik/klienci">Lista Adresów/Klienci</a></li>
-        <li><a href="/technik/wprowadz">Wprowadzanie Odczytów</a></li>
-        <li><a href="/technik/raportuj">Raportowanie Awarii</a></li>
-    </ul>
-    <a href="/wyloguj">Wyloguj</a>
-</body></html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Dashboard Technika</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Panel Pracownika Terenowego</h1>
+     <a href="/logowanie" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/technik" style="background: #1a5276;">Dashboard</a>
+        <a href="/technik/mapa">Mapa Tras Odczytowych</a>
+        <a href="/technik/klienci">Lista Adresów / Klienci</a>
+        <a href="/technik/wprowadz">Wprowadzanie Odczytów</a>
+        <a href="/technik/raportuj">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section">
+            <h2 class="section-title">Podsumowanie dnia</h2>
+            <div class="dashboard-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3 id="stat-zrobione">--</h3>
+                    <p>Zrealizowane odczyty</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-pozostalo">--</h3>
+                    <p>Pozostało do odczytu</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-awarie">--</h3>
+                    <p>Zgłoszone dzisiaj awarie</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <a href="/technik/mapa" class="menu-card">Mapa Tras Odczytowych</a>
+            <a href="/technik/klienci" class="menu-card">Lista Adresów / Klienci</a>
+            <a href="/technik/wprowadz" class="menu-card">Wprowadzanie Odczytów</a>
+            <a href="/technik/raportuj" class="menu-card">Raportowanie Awarii</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>Wsparcie IT dla pracowników: it@aquaflow.jaworzno.pl | 32 123 45 99</p>
+    </div>
+
+   
+</body>
+</html>

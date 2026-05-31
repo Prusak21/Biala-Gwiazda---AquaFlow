@@ -1,1 +1,196 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Komunikaty (Nowe faktury/Terminy)</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Komunikaty i Faktury</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 15px;
+            display: inline-block;
+            font-size: 13px;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .user-badge {
+            background: #27ae60;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .section {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .section h2 {
+            color: #1a5276;
+            border-bottom: 2px solid #ffc107;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .komunikat {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 5px solid #ffc107;
+        }
+        .komunikat h3 {
+            color: #1a5276;
+            margin-bottom: 8px;
+        }
+        .komunikat p {
+            margin-bottom: 8px;
+            line-height: 1.4;
+        }
+        .data {
+            color: #666;
+            font-size: 12px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #1a5276;
+            color: white;
+        }
+        .status-paid {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-unpaid {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+        .termin {
+            background: #e8f0fe;
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+        .brak {
+            text-align: center;
+            padding: 30px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Komunikaty i Faktury</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+    <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt</a>
+        <a href="/ebok/historia">Historia</a>
+        <a href="/ebok/faktury">Faktury</a>
+        <a href="/ebok/awarie">Awarie</a>
+        <a href="/ebok/archiwum">Archiwum</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+        <div class="section">
+            <h2>Komunikaty</h2>
+            <div id="komunikatyList"></div>
+        </div>
+        <div class="section">
+            <h2>Faktury</h2>
+            <table id="fakturyTable">
+                <thead>
+                    <tr><th>Okres</th><th>Zużycie</th><th>Kwota</th><th>Status</th><th>Termin płatności</th></tr>
+                </thead>
+                <tbody id="fakturyTableBody">
+                    <tr><td colspan="5" class="brak">Ładowanie faktur </td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+        <div class="section">
+            <h2>Terminy</h2>
+            <div id="terminyList">
+                <div class="termin">Termin platnosci faktury za luty: <strong>15.03.2025</strong></div>
+                <div class="termin">Planowane prace konserwacyjne: <strong>20.03.2025</strong></div>
+                <div class="termin">Ostateczny termin odczytu licznikow: <strong>31.03.2025</strong></div>
+            </div>
+        </div>
+         <a href="/ebok" class="btn-back">← Wroc</a>
+    </div>
+     <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+ 
+</body>
+</html>

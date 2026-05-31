@@ -1,1 +1,78 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Historia Zużycia (Wykresy)</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Historia Zużycia</title>
+    <link rel="stylesheet" href="/style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+     <a href="/logowanie" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+        
+        <h2 class="page-title">Twoje podsumowanie</h2>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3>Zużycie wody w m³</h3>
+                <canvas id="waterChart"></canvas> 
+            </div>
+            
+            <div class="chart-container">
+                <h3>Wysokość rachunków (PLN)</h3>
+                <canvas id="moneyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Miesiąc rozliczeniowy</th>
+                        <th>Zużycie (m³)</th>
+                        <th>Kwota netto</th>
+                        <th>Kwota brutto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr><td>Kwiecień 2026</td><td>4.10 m³</td><td>48.50 zł</td><td>52.38 zł</td></tr>
+                    <tr><td>Marzec 2026</td><td>3.80 m³</td><td>44.95 zł</td><td>48.55 zł</td></tr>
+                    <tr><td>Luty 2026</td><td>4.50 m³</td><td>53.23 zł</td><td>57.49 zł</td></tr>
+                    <tr><td>Styczeń 2026</td><td>4.20 m³</td><td>49.68 zł</td><td>53.65 zł</td></tr>
+                    <tr><td>Grudzień 2025</td><td>5.10 m³</td><td>60.33 zł</td><td>65.16 zł</td></tr>
+                    <tr><td>Listopad 2025</td><td>3.90 m³</td><td>46.13 zł</td><td>49.82 zł</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="ebok.html" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+ 
+</body>
+</html>

@@ -1,1 +1,163 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Praca z Warstwami Wektorowymi GIS</h1><p>Jesteś: Admin</p><a href="/admin">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Mapa GIS</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: inline-block;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .admin-badge {
+            background: #e74c3c;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        #map {
+            height: 550px;
+            width: 100%;
+            border-radius: 10px;
+            border: 2px solid #1a5276;
+            margin-bottom: 20px;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        .legend-color.blue { background: #1a5276; }
+        .legend-color.green { background: #27ae60; }
+        .legend-color.red { background: #e74c3c; }
+        .legend-color.orange { background: #f39c12; }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+        .loading, .error {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Mapa GIS</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+    <div class="nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/uzytkownicy">Użytkownicy i Role</a>
+        <a href="/admin/biling">Moduł Bilingowy</a>
+        <a href="/admin/analityka">Moduł Analityki</a>
+        <a href="/admin/mapa">Mapa GIS</a>
+        <a href="/admin/komunikacja">Komunikacja</a>
+    </div>
+    <div class="container">
+        <div class="admin-badge">Jesteś: Admin</div>
+        <div id="map" style="display: none;"></div>
+        <div class="legend" style="display: none;">
+            <div class="legend-item">
+                <div class="legend-color blue"></div>
+                <span>Liczniki główne</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color green"></div>
+                <span>Liczniki klientów</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color red"></div>
+                <span>Aktywne awarie</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color orange"></div>
+                <span>Sektory</span>
+            </div>
+        </div>
+        <a href="/admin" class="btn-back">Wróć</a>
+    </div>
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+         <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+    
+</body>
+</html>
