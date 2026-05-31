@@ -1,1 +1,265 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Zarządzanie Kontami i Rolami</h1><p>Jesteś: Admin</p><a href="/admin">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Zarządzanie Użytkownikami</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: inline-block;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .admin-badge {
+            background: #e74c3c;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #1a5276;
+            color: white;
+        }
+        .btn-add {
+            background: #27ae60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        .btn-edit {
+            background: #f39c12;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-right: 5px;
+        }
+        .btn-delete {
+            background: #e74c3c;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            width: 400px;
+        }
+        .modal-content h3 {
+            margin-bottom: 20px;
+        }
+        .modal-content input, .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .modal-content button {
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>AquaFlow - Zarządzanie Użytkownikami</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/uzytkownicy">Użytkownicy i Role</a>
+        <a href="/admin/biling">Moduł Bilingowy</a>
+        <a href="/admin/analityka">Moduł Analityka</a>
+        <a href="/admin/mapa">Mapa GIS</a>
+        <a href="/admin/komunikacja">Komunikacja</a>
+        <a href="/admin/cennik">Cennik</a>
+    </div>
+
+    <div class="container">
+        <div class="admin-badge">Jesteś: Admin</div>
+
+        <button class="btn-add" onclick="openAddModal()">+ Dodaj nowego użytkownika</button>
+
+        <table id="userTable">
+            <thead>
+                <tr><th>ID</th><th>E-mail</th><th>Status</th><th>Rola</th><th>Akcje</th></tr>
+            </thead>
+            <tbody id="userTableBody">
+
+            </tbody>
+        </table>
+
+        <a href="/admin" class="btn-back"> Wróć</a>
+    </div>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <h3 id="modalTitle">Dodaj użytkownika</h3>
+            <input type="hidden" id="editId">
+            <label>E-mail:</label>
+            <input type="email" id="userEmail" placeholder="email@example.com">
+            <label>Hasło:</label>
+            <input type="password" id="userPassword" placeholder="hasło">
+            <label>Rola:</label>
+            <select id="userRole">
+                <option value="Mieszkaniec">Mieszkaniec</option>
+                <option value="Technik">Technik</option>
+                <option value="Admin">Admin</option>
+            </select>
+            <label>Status:</label>
+            <select id="userStatus">
+                <option value="active">aktywny</option>
+                <option value="suspended">zawieszony</option>
+                <option value="pending">oczekujący</option>
+            </select>
+            <div style="margin-top: 15px;">
+                <button onclick="saveUser()">Zapisz</button>
+                <button onclick="closeModal()">Anuluj</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <script>
+        async function loadUsers() {
+            try {
+                const response = await fetch('/api/users');
+                
+                if (!response.ok) {
+                    throw new Error(`Błąd HTTP: ${response.status}`);
+                }
+                
+                const users = await response.json();
+                
+                if (users.length === 0) {
+                    document.getElementById('loading').innerHTML = 'Brak użytkowników w bazie.';
+                    return;
+                }
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('userTable').style.display = 'table';
+                
+                const tbody = document.getElementById('userTableBody');
+                tbody.innerHTML = '';
+                
+                users.forEach(user => {
+                    const row = tbody.insertRow();
+                    row.insertCell(0).innerHTML = user.id;
+                    row.insertCell(1).innerHTML = user.email;
+                    
+                    let statusColor = user.status === 'active' ? 'green' : (user.status === 'suspended' ? 'red' : 'orange');
+                    let statusText = user.status === 'active' ? 'aktywny' : (user.status === 'suspended' ? 'zawieszony' : 'oczekujący');
+                    row.insertCell(2).innerHTML = `<span style="color:${statusColor}">${statusText}</span>`;
+                    
+                    row.insertCell(3).innerHTML = user.role || 'brak roli';
+                });
+                
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                const errorDiv = document.getElementById('errorMsg');
+                errorDiv.style.display = 'block';
+                errorDiv.innerHTML = `Nie udało się pobrać danych z bazy. <br> Błąd: ${error.message}<br><br>Upewnij się, że backend ma endpoint GET /api/users.`;
+            }
+        }
+        loadUsers();
+    </script>
+</body>
+</html>

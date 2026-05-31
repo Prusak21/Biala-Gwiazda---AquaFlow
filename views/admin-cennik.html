@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Zarządzanie Cennikiem</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: inline-block;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .admin-badge {
+            background: #e74c3c;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .card h2 {
+            color: #1a5276;
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        button {
+            background: #27ae60;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #219a52;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>AquaFlow - Zarządzanie Cennikiem</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/uzytkownicy">Użytkownicy i Role</a>
+        <a href="/admin/biling">Moduł Bilingowy</a>
+        <a href="/admin/analityka">Moduł Analityki</a>
+        <a href="/admin/mapa">Mapa GIS</a>
+        <a href="/admin/komunikacja">Komunikacja</a>
+        <a href="/admin/cennik">Cennik</a>
+    </div>
+    <div class="container">
+        <div class="admin-badge">Jesteś: Admin</div>
+
+        <div class="card">
+            <h2>Taryfy za wodę</h2>
+            
+            <div class="form-group">
+                <label>Taryfa Gminna 2025 (cena za m³)</label>
+                <input type="number" id="cena2025" step="0.01" placeholder="4.80">
+            </div>
+            
+            <div class="form-group">
+                <label>Taryfa Gminna 2026 (cena za m³)</label>
+                <input type="number" id="cena2026" step="0.01" placeholder="5.50">
+            </div>
+            
+            <div class="form-group">
+                <label>Opłata abonamentowa (miesięcznie)</label>
+                <input type="number" id="oplataAbonament" step="0.01" placeholder="8.00">
+            </div>
+            
+            <div class="form-group">
+                <label>Opłata za odprowadzenie ścieków (za m³)</label>
+                <input type="number" id="oplataScieki" step="0.01" placeholder="4.20">
+            </div>
+            <button onclick="savePrices()">Zapisz zmiany</button>
+            <div id="message" class="message"></div>
+        </div>
+         <a href="/admin" class="btn-back">← Wróć</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+    <script>
+        function loadPrices() {
+            let ceny = localStorage.getItem('aquaflow_cennik');
+            if (ceny) {
+                ceny = JSON.parse(ceny);
+                document.getElementById('cena2025').value = ceny.cena2025 || 4.80;
+                document.getElementById('cena2026').value = ceny.cena2026 || 5.50;
+                document.getElementById('oplataAbonament').value = ceny.oplataAbonament || 8.00;
+                document.getElementById('oplataScieki').value = ceny.oplataScieki || 4.20;
+            } else {
+                document.getElementById('cena2025').value = 4.80;
+                document.getElementById('cena2026').value = 5.50;
+                document.getElementById('oplataAbonament').value = 8.00;
+                document.getElementById('oplataScieki').value = 4.20;
+            }
+        }
+        
+        function savePrices() {
+            const ceny = {
+                cena2025: parseFloat(document.getElementById('cena2025').value),
+                cena2026: parseFloat(document.getElementById('cena2026').value),
+                oplataAbonament: parseFloat(document.getElementById('oplataAbonament').value),
+                oplataScieki: parseFloat(document.getElementById('oplataScieki').value),
+                dataModyfikacji: new Date().toLocaleString('pl-PL')
+            };
+            
+            localStorage.setItem('aquaflow_cennik', JSON.stringify(ceny));
+            
+            const msgDiv = document.getElementById('message');
+            msgDiv.className = 'message success';
+            msgDiv.style.display = 'block';
+            msgDiv.innerHTML = 'Ceny zostały zapisane! Mieszkańcy zobaczą nowe ceny.';
+            
+            setTimeout(() => {
+                msgDiv.style.display = 'none';
+            }, 3000);
+        }
+        
+        loadPrices();
+    </script>
+</body>
+</html>

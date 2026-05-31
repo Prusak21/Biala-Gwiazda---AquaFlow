@@ -1,1 +1,263 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Praca z Warstwami Wektorowymi GIS</h1><p>Jesteś: Admin</p><a href="/admin">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Mapa GIS</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 25px;
+            display: inline-block;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .admin-badge {
+            background: #e74c3c;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        #map {
+            height: 550px;
+            width: 100%;
+            border-radius: 10px;
+            border: 2px solid #1a5276;
+            margin-bottom: 20px;
+        }
+        .legend {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+        }
+        .legend-color.blue { background: #1a5276; }
+        .legend-color.green { background: #27ae60; }
+        .legend-color.red { background: #e74c3c; }
+        .legend-color.orange { background: #f39c12; }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+        .loading, .error {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+        .error {
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Mapa GIS</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+    <div class="nav">
+        <a href="/admin">Dashboard</a>
+        <a href="/admin/uzytkownicy">Użytkownicy i Role</a>
+        <a href="/admin/biling">Moduł Bilingowy</a>
+        <a href="/admin/analityka">Moduł Analityki</a>
+        <a href="/admin/mapa">Mapa GIS</a>
+        <a href="/admin/komunikacja">Komunikacja</a>
+        <a href="/admin/cennik">Cennik</a>
+    </div>
+    <div class="container">
+        <div class="admin-badge">Jesteś: Admin</div>
+        <div id="map" style="display: none;"></div>
+        <div class="legend" style="display: none;">
+            <div class="legend-item">
+                <div class="legend-color blue"></div>
+                <span>Liczniki główne</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color green"></div>
+                <span>Liczniki klientów</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color red"></div>
+                <span>Aktywne awarie</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color orange"></div>
+                <span>Sektory</span>
+            </div>
+        </div>
+        <a href="/admin" class="btn-back">Wróć</a>
+    </div>
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+         <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+    <script>
+        let map;
+        let markerskayer = null;
+        let dataLoaded = false;
+        async function initMap() {
+            try {
+                map = L.map('map').setView([50.2, 19.27], 12);
+                
+                L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+                }).addTo(map);
+                
+                markersLayer = L.layerGroup().addTo(map);
+                
+                await loadMapData();
+                
+                if (dataLoaded) {
+                    document.getElementById('loading').style.display = 'none';
+                    document.getElementById('map').style.display = 'block';
+                    document.querySelector('.legend').style.display = 'flex';
+                } else {
+                    document.getElementById('loading').innerHTML = 'Brak danych do wyświetlenia na mapie.';
+                }
+                
+            } catch (error) {
+                document.getElementById('loading').innerHTML = 'Błąd ładowania mapy: ' + error.message;
+            }
+        }
+        
+        async function loadMapData() {
+            let hasData = false;
+            
+            try {
+                const metersRes = await fetch('/api/map/meters');
+                if (metersRes.ok) {
+                    const meters = await metersRes.json();
+                    if (meters.length > 0) hasData = true;
+                    meters.forEach(meter => {
+                        if (meter.lat && meter.lng) {
+                            L.circleMarker([meter.lat, meter.lng], {
+                                radius: 8,
+                                fillColor: meter.is_main_meter ? '#1a5276' : '#27ae60',
+                                color: '#fff',
+                                weight: 2,
+                                fillOpacity: 0.8
+                            }).bindPopup(`
+                                <b>Licznik:</b> ${meter.serial_number || 'brak'}<br>
+                                <b>Adres:</b> ${meter.address || 'brak'}
+                            `).addTo(markersLayer);
+                        }
+                    });
+                }
+            } catch(e) { console.log('Brak danych liczników:', e); }
+            
+            try {
+                const incidentsRes = await fetch('/api/map/incidents');
+                if (incidentsRes.ok) {
+                    const incidents = await incidentsRes.json();
+                    if (incidents.length > 0) hasData = true;
+                    incidents.forEach(incident => {
+                        if (incident.lat && incident.lng) {
+                            L.circleMarker([incident.lat, incident.lng], {
+                                radius: 10,
+                                fillColor: '#e74c3c',
+                                color: '#fff',
+                                weight: 2,
+                                fillOpacity: 0.8
+                            }).bindPopup(`
+                                <b>Awaria</b><br>
+                                <b>Status:</b> ${incident.current_status || 'zgłoszona'}
+                            `).addTo(markersLayer);
+                        }
+                    });
+                }
+            } catch(e) { console.log('Brak danych awarii:', e); }
+            
+            try {
+                const sectorsRes = await fetch('/api/map/sectors');
+                if (sectorsRes.ok) {
+                    const sectors = await sectorsRes.json();
+                    if (sectors.length > 0) hasData = true;
+                    sectors.forEach(sector => {
+                        if (sector.geojson) {
+                            try {
+                                const geoData = typeof sector.geojson === 'string' ? JSON.parse(sector.geojson) : sector.geojson;
+                                L.geoJSON(geoData, {
+                                    style: { color: '#f39c12', weight: 2, fillOpacity: 0.2, fillColor: '#f39c12' }
+                                }).bindPopup(`<b>Sektor:</b> ${sector.name}`).addTo(markersLayer);
+                            } catch(e) {}
+                        }
+                    });
+                }
+            } catch(e) { console.log('Brak danych sektorów:', e); }
+            dataLoaded = hasData;
+            if (!dataLoaded) {
+                map.remove();
+            }
+        }
+        initMap();
+    </script>
+</body>
+</html>

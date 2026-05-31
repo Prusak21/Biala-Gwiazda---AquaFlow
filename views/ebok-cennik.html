@@ -1,1 +1,192 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Cennik e-BOK</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Cennik</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 24px;
+        }
+        .logout-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 8px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+        }
+        .nav {
+            background: #2c3e50;
+            padding: 0;
+        }
+        .nav a {
+            color: white;
+            text-decoration: none;
+            padding: 15px 15px;
+            display: inline-block;
+            font-size: 13px;
+        }
+        .nav a:hover {
+            background: #1a5276;
+        }
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+        .user-badge {
+            background: #27ae60;
+            color: white;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        th {
+            background: #1a5276;
+            color: white;
+            padding: 15px;
+            text-align: left;
+        }
+        td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+        .cena {
+            font-weight: bold;
+            color: #1a5276;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 20px;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+        .info-box {
+            background: #e8f0fe;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #1a5276;
+        }
+        .data-modyfikacji {
+            font-size: 12px;
+            color: #666;
+            margin-top: 10px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Cennik</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+    <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt</a>
+        <a href="/ebok/historia">Historia</a>
+        <a href="/ebok/faktury">Faktury</a>
+        <a href="/ebok/awarie">Awarie</a>
+        <a href="/ebok/archiwum">Archiwum</a>
+        <a href="/ebok/lojalnosc">Pogram Lojalnościowy</a>
+    </div>
+    <div class="container">
+        <div class="user-badge">Jestes: Mieszkaniec zalogowany</div>
+
+        <div class="info-box">
+            <strong>Informacja:</strong> Ceny netto, do ktorych doliczony jest podatek VAT 8%.
+        </div>
+        <table id="cennikTable">
+            <thead>
+                <tr><th>Taryfa</th><th>Cena za m³</th><th>Okres</th></tr>
+            </thead>
+            <tbody id="taryfyBody">
+                <tr><td colspan="3" class="brak">Ladowanie cen...</td></tr>
+            </tbody>
+        </table>
+        <table>
+            <thead>
+                <tr><th>Opłata</th><th>Kwota</th></tr>
+            </thead>
+            <tbody id="oplatyBody">
+                <tr><td colspan="2" class="brak">Ładowanie</td></tr>
+            </tbody>
+        </table>
+        <div id="dataModyfikacji" class="data-modyfikacji"></div>
+        <a href="/ebok" class="btn-back">← Wroc</a>
+    </div>
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+    <script>
+        function loadPrices() {
+            let ceny = localStorage.getItem('aquaflow_cennik');
+            if (ceny) {
+                ceny = JSON.parse(ceny);
+            } else {
+                ceny = {
+                    cena2025: 4.80,
+                    cena2026: 5.50,
+                    oplataAbonament: 8.00,
+                    oplataScieki: 4.20,
+                    dataModyfikacji: 'domyślne'
+                };
+            }
+            const taryfyBody = document.getElementById('taryfyBody');
+            taryfyBody.innerHTML = `
+                <tr><td>Taryfa Gminna 2025</td><td class="cena">${ceny.cena2025} zł</td><td>01.01.2025 - 31.12.2025</td></tr>
+                <tr><td>Taryfa Gminna 2026</td><td class="cena">${ceny.cena2026} zł</td><td>od 01.01.2026</td></tr>
+            `;
+            const oplatyBody = document.getElementById('oplatyBody');
+            oplatyBody.innerHTML = `
+                <tr><td>Opłata abonamentowa</td><td class="cena">${ceny.oplataAbonament} zł / miesiąc</td></tr>
+                <tr><td>Opłata za odprowadzenie ścieków</td><td class="cena">${ceny.oplataScieki} zł / m³</td></tr>
+            `;
+            if (ceny.dataModyfikacji && ceny.dataModyfikacji !== 'domyślne') {
+                document.getElementById('dataModyfikacji').innerHTML = `Ostatnia aktualizacja cen: ${ceny.dataModyfikacji}`;
+            }
+        }
+        loadPrices();
+    </script>
+</body>
+</html>

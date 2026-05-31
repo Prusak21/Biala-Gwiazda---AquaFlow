@@ -1,1 +1,138 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Komunikaty i Awarie</h1><p>Jesteś: Gość</p><a href="/">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Komunikaty i Awarie</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+        }
+        .header {
+            background: #1a5276;
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+        .header h1 {
+            font-size: 42px;
+        }
+        .nav {
+            background: white;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        .nav a {
+            color: #1a5276;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: bold;
+        }
+        .container {
+            max-width: 900px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .info-box {
+            background: #e8f0fe;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .guest-badge {
+            background: #ffc107;
+            color: #333;
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        .komunikat {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-left: 5px solid #ffc107;
+        }
+        .komunikat h3 {
+            color: #1a5276;
+            margin-bottom: 10px;
+        }
+        .komunikat p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+        .data {
+            color: #666;
+            font-size: 12px;
+        }
+        .footer {
+            background: #1a5276;
+            color: white;
+            text-align: center;
+            padding: 25px;
+            margin-top: 50px;
+        }
+        .btn-back {
+            background: #6c757d;
+            color: white;
+            padding: 10px 25px;
+            text-decoration: none;
+            border-radius: 5px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow</h1>
+        <p>Komunikaty i Awarie</p>
+    </div>
+
+    <div class="nav">
+        <a href="/">Strona główna</a>
+        <a href="/cennik">Cennik</a>
+        <a href="/komunikaty">Komunikaty</a>
+        <a href="/logowanie">Zaloguj się</a>
+    </div>
+    <div class="container">
+        <div class="info-box">
+            <span class="guest-badge">Jesteś: Gość</span>
+        </div>
+
+        <div class="komunikat">
+            <h3>Planowane przerwy w dostawie wody</h3>
+            <p>W dniu 20.03.2025 w godzinach 8:00-14:00 nastąpi przerwa w dostawie wody dla ulic: Grunwaldzka, Mickiewicza, Słowackiego</p>
+            <div class="data">Opublikowano: 15.03.2025</div>
+        </div>
+        <div class="komunikat">
+            <h3>💧 Płukanie sieci wodociągowej</h3>
+            <p>W nocy z piątku na sobotę (21-22.03.2025) w rejonie Śródmieścia może wystąpić rdzawa woda. Przepraszamy za utrudnienia.</p>
+            <div class="data">Opublikowano: 18.03.2025</div>
+        </div>
+        <div class="komunikat">
+            <h3>📢 Nowy cennik od 2026 roku</h3>
+            <p>Od 1 stycznia 2026 roku obowiązuje nowa taryfa za wodę - 5,50 zł za m³. Szczegóły w zakładce Cennik.</p>
+            <div class="data">Opublikowano: 01.12.2025</div>
+        </div>
+
+        <div style="text-align: center;">
+            <a href="/" class="btn-back"> Wróć</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+</body>
+</html>
