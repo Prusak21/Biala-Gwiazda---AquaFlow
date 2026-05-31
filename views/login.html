@@ -13,7 +13,7 @@
             Nieprawidłowy adres e-mail lub hasło.
         </div>
 
-        <form action="/zaloguj" method="POST">
+        <form id="loginForm">
             <div class="mb-3">
                 <label class="form-label">Adres e-mail</label>
                 <input type="email" name="email" class="form-control" placeholder="jan@kowalski.pl" required>
@@ -22,7 +22,17 @@
                 <label class="form-label">Hasło</label>
                 <input type="password" name="haslo" class="form-control" placeholder="****" required>
             </div>
-            <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
+            
+            <div class="mb-3">
+                <label class="form-label text-muted" style="font-size: 0.9rem;">Typ konta:</label>
+                <select id="roleMock" class="form-select">
+                    <option value="mieszkaniec">Mieszkaniec</option>
+                    <option value="admin">Administrator (Urząd)</option>
+                    <option value="technik">Technik (Serwis)</option>
+                </select>
+            </div>
+
+            <button type="button" id="btn-login-submit" class="btn btn-primary w-100">Zaloguj</button>
         </form>
         
         <div class="mt-3 text-center">
@@ -34,9 +44,10 @@
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.get('error') === '1') {
             document.getElementById('error-alert').classList.remove('d-none');
-            // Czyści pasek adresu, żeby błąd nie wisiał po odświeżeniu
-            window.history.replaceState({}, document.title, "/logowanie");
+            window.history.replaceState({}, document.title, "login.html");
         }
     </script>
+    <link rel="stylesheet" href="style.css">
+    <script src="main.js"></script>
 </body>
 </html>
