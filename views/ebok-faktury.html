@@ -1,1 +1,122 @@
-<!DOCTYPE html><html lang="pl"><body><h1>e-Faktury i Płatności</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - e-Faktury i Płatności</title>
+    <link rel="stylesheet" href="style.css">
+   
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="login.html" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="ebok.html">Dashboard</a>
+        <a href="ebok-cennik.html">Cennik</a>
+        <a href="ebok-komunikaty.html">Komunikaty</a>
+        <a href="ebok-odczyt.html">Odczyt Licznika</a>
+        <a href="ebok-historia.html">Historia Zużycia i Rachunków</a>
+        <a href="ebok-faktury.html" style="background: #1a5276;">e-Faktury i Płatności</a>
+        <a href="ebok-awarie.html">Zgłaszanie Awarii</a>
+        <a href="ebok-archiwum.html">Archiwum zgłoszeń</a>
+        <a href="ebok-lojalnosc.html">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="section">
+            <h2 class="page-title">Twoje Faktury</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Numer Faktury</th>
+                        <th>Okres rozliczeniowy</th>
+                        <th>Kwota</th>
+                        <th>Termin płatności</th>
+                        <th>Status</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody id="faktury-tbody">
+                </tbody>
+            </table>
+        </div>
+
+        <a href="ebok.html" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <script>
+        async function pobierzFaktury() {
+            const tbody = document.getElementById('faktury-tbody');
+            try {
+                const response = await fetch('/api/user/invoices');
+                if (!response.ok) throw new Error('Brak połączenia z serwerem');
+                
+                const dane = await response.json();
+                let html = '';
+                
+                dane.forEach(faktura => {
+                    html += `<tr>
+                        <td>${faktura.numer}</td>
+                        <td>${faktura.okres}</td>
+                        <td>${faktura.kwota} zł</td>
+                        <td>${faktura.termin}</td>
+                        <td class="${faktura.status === 'Opłacona' ? 'status-paid' : 'status-unpaid'}">${faktura.status}</td>
+                        <td>
+                            ${faktura.status !== 'Opłacona' ? '<button class="action-btn pay-btn" onclick="alert(\'Przekierowanie do bramki płatności...\')">Opłać</button>' : ''}
+                            <button class="action-btn pdf-btn" onclick="alert(\'Pobieranie PDF...\')">PDF</button>
+                        </td>
+                    </tr>`;
+                });
+                
+                tbody.innerHTML = html;
+            } catch (error) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td>FV/2026/04/123</td>
+                        <td>Kwiecień 2026</td>
+                        <td>52.38 zł</td>
+                        <td>15.05.2026</td>
+                        <td class="status-unpaid">Do zapłaty</td>
+                        <td>
+                            <button class="action-btn pay-btn" onclick="alert('Przekierowanie do bramki płatności PayU/Blik...')">Opłać</button>
+                            <button class="action-btn pdf-btn" onclick="alert('Pobieranie pliku PDF...')">PDF</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>FV/2026/03/123</td>
+                        <td>Marzec 2026</td>
+                        <td>48.55 zł</td>
+                        <td>15.04.2026</td>
+                        <td class="status-paid">Opłacona</td>
+                        <td>
+                            <button class="action-btn pdf-btn" onclick="alert('Pobieranie pliku PDF...')">PDF</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>FV/2026/02/123</td>
+                        <td>Luty 2026</td>
+                        <td>57.49 zł</td>
+                        <td>15.03.2026</td>
+                        <td class="status-paid">Opłacona</td>
+                        <td>
+                            <button class="action-btn pdf-btn" onclick="alert('Pobieranie pliku PDF...')">PDF</button>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        pobierzFaktury();
+    </script>
+</body>
+</html>

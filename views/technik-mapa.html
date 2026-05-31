@@ -1,1 +1,68 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Interaktywna Mapa Tras (GPS)</h1><p>Jesteś: Technik</p><a href="/technik">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Mapa Tras Odczytowych</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Mapa Tras Odczytowych</h1>
+        <a href="login.html" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="technik.html">Dashboard</a>
+        <a href="technik-mapa.html" style="background: #1a5276;">Mapa Tras Odczytowych</a>
+        <a href="technik-klienci.html">Lista Adresów / Klienci</a>
+        <a href="technik-wprowadz.html">Wprowadzanie Odczytów</a>
+        <a href="technik-raportuj.html">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section">
+            <div id="map"></div>
+        </div>
+
+        <a href="technik.html" class="btn-back">← Wróć</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>Wsparcie IT dla pracowników: it@aquaflow.jaworzno.pl | 32 123 45 99</p>
+    </div>
+    
+    <script>
+        const map = L.map('map').setView([50.2053, 19.2739], 14);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19
+        }).addTo(map);
+
+        async function pobierzTrasy() {
+            try {
+                const response = await fetch('/api/tech/routes');
+                if (!response.ok) throw new Error('');
+                
+                const trasy = await response.json();
+                
+                trasy.forEach(punkt => {
+                    L.marker([punkt.lat, punkt.lng]).addTo(map).bindPopup(punkt.opis);
+                });
+            } catch (error) {
+                L.marker([50.2053, 19.2739]).addTo(map).bindPopup("<b>ul. Polna 12</b><br>Licznik: WM-001<br>Status: Do odczytu");
+                L.marker([50.2100, 19.2800]).addTo(map).bindPopup("<b>ul. Mickiewicza 14</b><br>Licznik: WM-002<br>Status: Do odczytu");
+                L.marker([50.1980, 19.2650]).addTo(map).bindPopup("<b>ul. Słowackiego 5</b><br>Licznik: WM-003<br>Status: Awaria zgłoszona");
+            }
+        }
+
+        pobierzTrasy();
+    </script>
+</body>
+</html>

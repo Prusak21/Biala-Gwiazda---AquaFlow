@@ -1,1 +1,110 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Lista Adresów do Odwiedzenia</h1><p>Jesteś: Technik</p><a href="/technik">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Lista Adresów / Klienci</title>
+    <link rel="stylesheet" href="style.css">
+    
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Lista Adresów / Klienci</h1>
+        <a href="login.html" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="technik.html">Dashboard</a>
+        <a href="technik-mapa.html">Mapa Tras Odczytowych</a>
+        <a href="technik-klienci.html" style="background: #1a5276;">Lista Adresów / Klienci</a>
+        <a href="technik-wprowadz.html">Wprowadzanie Odczytów</a>
+        <a href="technik-raportuj.html">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Adres Nieruchomości</th>
+                        <th>Numer Licznika</th>
+                        <th>Ostatni Odczyt</th>
+                        <th>Status (Bieżący miesiąc)</th>
+                        <th>Akcja</th>
+                    </tr>
+                </thead>
+                <tbody id="klienciTbody">
+                </tbody>
+            </table>
+        </div>
+        
+        <a href="technik.html" class="btn-back">← Wróć</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>Wsparcie IT dla pracowników: it@aquaflow.jaworzno.pl | 32 123 45 99</p>
+    </div>
+    
+    <script>
+        async function pobierzKlientow() {
+            const tbody = document.getElementById('klienciTbody');
+            try {
+                const response = await fetch('/api/tech/clients');
+                if (!response.ok) throw new Error('');
+                
+                const dane = await response.json();
+                let html = '';
+                
+                dane.forEach(klient => {
+                    html += `<tr>
+                        <td>${klient.adres}</td>
+                        <td>${klient.licznik}</td>
+                        <td>${klient.ostatni}</td>
+                        <td class="${klient.status === 'Brak odczytu' ? 'status-brak' : 'status-ok'}">${klient.status}</td>
+                        <td>
+                            <a href="technik-wprowadz.html" class="btn-action">Wprowadź stan</a>
+                        </td>
+                    </tr>`;
+                });
+                
+                tbody.innerHTML = html;
+            } catch (error) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td>ul. Polna 12</td>
+                        <td>WM-001</td>
+                        <td>142.50 m³</td>
+                        <td class="status-ok">Odczytano</td>
+                        <td>
+                            <a href="technik-wprowadz.html" class="btn-action">Aktualizuj</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ul. Mickiewicza 14</td>
+                        <td>WM-002</td>
+                        <td>89.10 m³</td>
+                        <td class="status-brak">Brak odczytu</td>
+                        <td>
+                            <a href="technik-wprowadz.html" class="btn-action">Wprowadź stan</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>ul. Słowackiego 5</td>
+                        <td>WM-003</td>
+                        <td>210.00 m³</td>
+                        <td class="status-brak">Brak odczytu</td>
+                        <td>
+                            <a href="technik-wprowadz.html" class="btn-action">Wprowadź stan</a>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+        
+        pobierzKlientow();
+    </script>
+</body>
+</html>

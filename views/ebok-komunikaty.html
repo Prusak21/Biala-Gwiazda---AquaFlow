@@ -3,256 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AquaFlow - Komunikaty i Faktury</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-        }
-        .header {
-            background: #1a5276;
-            color: white;
-            padding: 20px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        .header h1 {
-            font-size: 24px;
-        }
-        .logout-btn {
-            background: #e74c3c;
-            color: white;
-            padding: 8px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-        }
-        .nav {
-            background: #2c3e50;
-            padding: 0;
-        }
-        .nav a {
-            color: white;
-            text-decoration: none;
-            padding: 15px 15px;
-            display: inline-block;
-            font-size: 13px;
-        }
-        .nav a:hover {
-            background: #1a5276;
-        }
-        .container {
-            max-width: 1000px;
-            margin: 30px auto;
-            padding: 0 20px;
-        }
-        .user-badge {
-            background: #27ae60;
-            color: white;
-            display: inline-block;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            margin-bottom: 20px;
-        }
-        .section {
-            background: white;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 30px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        .section h2 {
-            color: #1a5276;
-            border-bottom: 2px solid #ffc107;
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        .komunikat {
-            background: #f9f9f9;
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border-left: 5px solid #ffc107;
-        }
-        .komunikat h3 {
-            color: #1a5276;
-            margin-bottom: 8px;
-        }
-        .komunikat p {
-            margin-bottom: 8px;
-            line-height: 1.4;
-        }
-        .data {
-            color: #666;
-            font-size: 12px;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background: #1a5276;
-            color: white;
-        }
-        .status-paid {
-            color: #27ae60;
-            font-weight: bold;
-        }
-        .status-unpaid {
-            color: #e74c3c;
-            font-weight: bold;
-        }
-        .termin {
-            background: #e8f0fe;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 10px;
-        }
-        .btn-back {
-            background: #6c757d;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            display: inline-block;
-            margin-top: 20px;
-        }
-        .footer {
-            background: #1a5276;
-            color: white;
-            text-align: center;
-            padding: 25px;
-            margin-top: 50px;
-        }
-        .brak {
-            text-align: center;
-            padding: 30px;
-            color: #666;
-        }
-    </style>
+    <title>AquaFlow - Komunikaty i Aktualności</title>
+    <link rel="stylesheet" href="style.css">
+    
 </head>
 <body>
     <div class="header">
-        <h1>AquaFlow - Komunikaty i Faktury</h1>
-        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="login.html" class="logout-btn">Wyloguj</a>
     </div>
+    
     <div class="nav">
-        <a href="/ebok">Dashboard</a>
-        <a href="/ebok/cennik">Cennik</a>
-        <a href="/ebok/komunikaty">Komunikaty</a>
-        <a href="/ebok/odczyt">Odczyt</a>
-        <a href="/ebok/historia">Historia</a>
-        <a href="/ebok/faktury">Faktury</a>
-        <a href="/ebok/awarie">Awarie</a>
-        <a href="/ebok/archiwum">Archiwum</a>
-        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+        <a href="ebok.html">Dashboard</a>
+        <a href="ebok-cennik.html">Cennik</a>
+        <a href="ebok-komunikaty.html" style="background: #1a5276;">Komunikaty</a>
+        <a href="ebok-odczyt.html">Odczyt Licznika</a>
+        <a href="ebok-historia.html">Historia Zużycia i Rachunków</a>
+        <a href="ebok-faktury.html">e-Faktury i Płatności</a>
+        <a href="ebok-awarie.html">Zgłaszanie Awarii</a>
+        <a href="ebok-archiwum.html">Archiwum zgłoszeń</a>
+        <a href="ebok-lojalnosc.html">Program Lojalnościowy</a>
     </div>
+    
     <div class="container">
         <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+        
         <div class="section">
-            <h2>Komunikaty</h2>
+            <h2 class="page-title">📢 Ważne Komunikaty</h2>
             <div id="komunikatyList"></div>
         </div>
+
         <div class="section">
-            <h2>Faktury</h2>
-            <table id="fakturyTable">
-                <thead>
-                    <tr><th>Okres</th><th>Zużycie</th><th>Kwota</th><th>Status</th><th>Termin płatności</th></tr>
-                </thead>
-                <tbody id="fakturyTableBody">
-                    <tr><td colspan="5" class="brak">Ładowanie faktur </td></tr>
-                </tbody>
-            </table>
+            <h2 class="page-title">📅 Terminy i Przypomnienia</h2>
+            <div id="terminyList"></div>
         </div>
+        
+        <a href="ebok.html" class="btn-back">← Wróć do Panelu</a>
     </div>
-        <div class="section">
-            <h2>Terminy</h2>
-            <div id="terminyList">
-                <div class="termin">Termin platnosci faktury za luty: <strong>15.03.2025</strong></div>
-                <div class="termin">Planowane prace konserwacyjne: <strong>20.03.2025</strong></div>
-                <div class="termin">Ostateczny termin odczytu licznikow: <strong>31.03.2025</strong></div>
-            </div>
-        </div>
-         <a href="/ebok" class="btn-back">← Wroc</a>
-    </div>
-     <div class="footer">
+    
+    <div class="footer">
         <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
         <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
     </div>
 
     <script>
-        function loadKomunikaty() {
-            let komunikaty = localStorage.getItem('aquaflow_komunikaty');
-            if (komunikaty) {
-                komunikaty = JSON.parse(komunikaty);
-            } else {
-                komunikaty = [];
-            }
+        async function loadKomunikaty() {
             const listDiv = document.getElementById('komunikatyList');
-            if (komunikaty.length === 0) {
-                listDiv.innerHTML = '<div class="brak">Brak nowych komunikatow.</div>';
-                return;
-            }
-            let html = '';
-            for (let i = komunikaty.length - 1; i >= 0; i--) {
-                const k = komunikaty[i];
-                html += `
+            try {
+                const response = await fetch('/api/messages');
+                if (!response.ok) throw new Error('Błąd połączenia');
+                
+                const komunikaty = await response.json();
+                let html = '';
+                
+                komunikaty.forEach(k => {
+                    html += `
+                        <div class="komunikat">
+                            <h3>${k.tytul}</h3>
+                            <p>${k.tresc}</p>
+                            <div class="data">Opublikowano: ${k.data}</div>
+                        </div>
+                    `;
+                });
+                listDiv.innerHTML = html;
+            } catch (error) {
+                listDiv.innerHTML = `
                     <div class="komunikat">
-                        <h3>${k.tytul}</h3>
-                        <p>${k.tresc}</p>
-                        <div class="data">Opublikowano: ${k.data}</div>
+                        <h3>Przerwa w dostawie wody - Sektor Północny</h3>
+                        <p>W związku z pracami konserwacyjnymi prowadzonymi na głównej magistrali, w dniu 15.06.2026 od godziny 08:00 do 14:00 może nastąpić przerwa w dostawie wody lub spadek ciśnienia.</p>
+                        <div class="data">Opublikowano: 28.05.2026</div>
+                    </div>
+                    <div class="komunikat">
+                        <h3>Jakość wody na najwyższym poziomie</h3>
+                        <p>Z radością informujemy, że ostatnie testy laboratoryjne potwierdziły doskonałe parametry fizykochemiczne i bakteriologiczne naszej wody. Spełnia ona wszystkie restrykcyjne normy unijne.</p>
+                        <div class="data">Opublikowano: 14.05.2026</div>
                     </div>
                 `;
             }
-            listDiv.innerHTML = html;
         }
-        async function loadFaktury() {
+
+        async function loadTerminy() {
+            const terminyDiv = document.getElementById('terminyList');
             try {
-                const response = await fetch('/api/invoices');
-                if (!response.ok) {
-                    throw new Error('Brak endpointu');
-                }
-                const faktury = await response.json();
-                const tbody = document.getElementById('fakturyTableBody');
-                tbody.innerHTML = '';
-                if (faktury.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="brak">Brak faktur.</td></tr>';
-                    return;
-                }
-                faktury.forEach(faktura => {
-                    const row = tbody.insertRow();
-                    row.insertCell(0).innerHTML = `${faktura.period_start} - ${faktura.period_end}`;
-                    row.insertCell(1).innerHTML = faktura.consumption_m3 + ' m³';
-                    row.insertCell(2).innerHTML = faktura.amount + ' zł';
-                    let statusClass = faktura.status === 'paid' ? 'status-paid' : 'status-unpaid';
-                    let statusText = faktura.status === 'paid' ? 'Oplaczona' : 'Do zaplaty';
-                    row.insertCell(3).innerHTML = `<span class="${statusClass}">${statusText}</span>`;
-                    row.insertCell(4).innerHTML = faktura.due_date || 'brak terminu';
+                const response = await fetch('/api/deadlines');
+                if (!response.ok) throw new Error('Błąd połączenia');
+                
+                const terminy = await response.json();
+                let html = '';
+                
+                terminy.forEach(t => {
+                    html += `<div class="termin">${t.opis}: <strong>${t.data}</strong></div>`;
                 });
+                terminyDiv.innerHTML = html;
             } catch (error) {
-                const tbody = document.getElementById('fakturyTableBody');
-                tbody.innerHTML = `
-                    <tr><td>Styczen 2025</td><td>15 m³</td><td>82,50 zł</td><td class="status-paid">Oplaczona</td><td>15.02.2025</td></tr>
-                    <tr><td>Luty 2025</td><td>12 m³</td><td>66,00 zł</td><td class="status-unpaid">Do zaplaty</td><td>15.03.2025</td></tr>
-                    <tr><td>Marzec 2025</td><td>18 m³</td><td>99,00 zł</td><td class="status-unpaid">Do zaplaty</td><td>15.04.2025</td></tr>
+                terminyDiv.innerHTML = `
+                    <div class="termin">Ostateczny termin płatności faktury za maj: <strong>15.06.2026</strong></div>
+                    <div class="termin">Planowane płukanie sieci wodociągowej: <strong>20.06.2026</strong></div>
+                    <div class="termin">Termin podawania odczytów wodomierzy za kolejny okres: <strong>do 30.06.2026</strong></div>
                 `;
             }
         }
+        
         loadKomunikaty();
-        loadFaktury();
+        loadTerminy();
     </script>
-    <link rel="stylesheet" href="style.css">
-    <script src="main.js"></script>
 </body>
 </html>

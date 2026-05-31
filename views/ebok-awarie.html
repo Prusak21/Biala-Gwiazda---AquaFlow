@@ -1,1 +1,89 @@
-<!DOCTYPE html><html lang="pl"><body><h1>Zgłaszanie Awarii na Przyłączu</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Zgłaszanie Awarii</title>
+    <link rel="stylesheet" href="style.css">
+
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="login.html" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="ebok.html">Dashboard</a>
+        <a href="ebok-cennik.html">Cennik</a>
+        <a href="ebok-komunikaty.html">Komunikaty</a>
+        <a href="ebok-odczyt.html">Odczyt Licznika</a>
+        <a href="ebok-historia.html">Historia Zużycia i Rachunków</a>
+        <a href="ebok-faktury.html">e-Faktury i Płatności</a>
+        <a href="ebok-awarie.html" style="background: #1a5276;">Zgłaszanie Awarii</a>
+        <a href="ebok-archiwum.html">Archiwum zgłoszeń</a>
+        <a href="ebok-lojalnosc.html">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="section">
+            <h2 class="page-title">⚠️ Zgłoś Awarię lub Usterkę</h2>
+            
+            <div class="info-box">
+                <strong>Ważne:</strong> Ze względów bezpieczeństwa i w celu uniknięcia fałszywych zgłoszeń, prosimy o podanie numeru licznika oraz weryfikację tożsamości poprzez podanie numeru PESEL lub numeru Dowodu Osobistego powiązanego z umową.
+            </div>
+
+            <form action="#" method="POST" onsubmit="alert('Zgłoszenie zostało wysłane. Technik wkrótce zajmie się sprawą.'); return false;">
+                
+                <div class="form-group">
+                    <label class="tytul-pola" for="typ-awarii">Rodzaj problemu:</label>
+                    <select id="typ-awarii" required>
+                        <option value="">-- Wybierz z listy --</option>
+                        <option value="brak_wody">Brak wody w kranie</option>
+                        <option value="cisnienie">Bardzo słabe ciśnienie</option>
+                        <option value="wyciek_licznik">Wyciek w okolicach wodomierza</option>
+                        <option value="jakosc">Brudna woda / Zła jakość</option>
+                        <option value="inne">Inne</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola" for="nr-licznika">Numer Licznika (ID):</label>
+                    <input type="text" id="nr-licznika" placeholder="np. WM-2024-001" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola" for="weryfikacja">Numer PESEL lub Numer Dowodu Osobistego:</label>
+                    <input type="password" id="weryfikacja" placeholder="Wprowadź dane do autoryzacji" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola" for="opis">Dodatkowy opis sytuacji:</label>
+                    <textarea id="opis" placeholder="Opisz dokładnie co się dzieje..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola">Zdjęcie usterki (Opcjonalne):</label>
+                    <label class="file-drop-area">
+                        <input type="file" class="file-input" accept="image/*">
+                        📸 Kliknij tutaj, aby wybrać zdjęcie z dysku lub telefonu
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">Wyślij Zgłoszenie Awarii</button>
+            </form>
+        </div>
+
+        <a href="ebok.html" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>Pogotowie wodociągowe: 994 | bok@aquaflow.jaworzno.pl</p>
+    </div>
+    
+    <script src="main.js"></script>
+</body>
+</html>
