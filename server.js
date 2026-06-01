@@ -53,7 +53,7 @@ app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'views', 'index.htm
 app.get('/cennik', (req, res) => res.sendFile(path.join(__dirname, 'views', 'cennik-gosc.html')));
 app.get('/komunikaty', (req, res) => res.sendFile(path.join(__dirname, 'views', 'komunikaty-gosc.html')));
 app.get('/logowanie', (req, res) => res.sendFile(path.join(__dirname, 'views', 'login.html')));
-
+app.get('/rejestracja', (req, res) => res.sendFile(path.join(__dirname, 'views', 'rejestracja.html')));
 // --- LOGOWANIE OPARTE NA STATUSACH I UPRAWNIENIACH ---
 app.post('/zaloguj', async (req, res) => {
     const { email, haslo } = req.body;
