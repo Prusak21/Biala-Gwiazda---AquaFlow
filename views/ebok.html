@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - e-BOK</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #1a5276; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; }
+        .logout-btn { background: #e74c3c; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px; font-weight: bold; }
+        .nav { background: #2c3e50; padding: 0; }
+        .nav a { color: white; text-decoration: none; padding: 15px 18px; display: inline-block; font-size: 14px; }
+        .nav a:hover, .nav a.active { background: #1a5276; }
+        
+        .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+        .user-badge { background: #27ae60; color: white; display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; font-weight: bold; }
+        
+        .alert { background: white; color: white; padding: 20px; border-radius: 8px; margin-bottom: 30px; text-align: center; font-size: 16px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: none; transition: background 0.3s; }
+        
+        .menu-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+        .menu-card { background: white; padding: 25px 15px; border-radius: 10px; flex: 1; min-width: 220px; text-align: center; text-decoration: none; color: #2c3e50; box-shadow: 0 4px 6px rgba(0,0,0,0.05); font-weight: bold; transition: transform 0.2s, box-shadow 0.2s; }
+        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 6px 12px rgba(0,0,0,0.1); background: #f8fcfd; border-bottom: 3px solid #3498db; }
+        .menu-card .icon { font-size: 40px; display: block; margin-bottom: 15px; }
+        
+        .footer { background: #1a5276; color: white; text-align: center; padding: 25px; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - Pulpit Mieszkańca</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/ebok" class="active">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec (Konto aktywne)</div>
+
+        <div id="dynamic-alert" class="alert">
+            Ładowanie powiadomień systemu...
+        </div>
+
+        <div class="menu-grid">
+            <a href="/ebok/odczyt" class="menu-card">
+                <span class="icon">📝</span> Przekaż Odczyt
+            </a>
+            <a href="/ebok/faktury" class="menu-card">
+                <span class="icon">💳</span> Twoje e-Faktury
+            </a>
+            <a href="/ebok/historia" class="menu-card">
+                <span class="icon">📊</span> Historia Zużycia
+            </a>
+            <a href="/ebok/awarie" class="menu-card">
+                <span class="icon">⚠️</span> Zgłoś Awarię
+            </a>
+            <a href="/ebok/komunikaty" class="menu-card">
+                <span class="icon">📢</span> Tablica Ogłoszeń
+            </a>
+            <a href="/ebok/cennik" class="menu-card">
+                <span class="icon">📄</span> Aktualny Cennik
+            </a>
+            <a href="/ebok/archiwum" class="menu-card">
+                <span class="icon">🗄️</span> Archiwum Awarii
+            </a>
+            <a href="/ebok/lojalnosc" class="menu-card">
+                <span class="icon">🌱</span> Eko-Krople (Lojalność)
+            </a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p style="margin-top: 5px; font-size: 12px; color: #bdc3c7;">bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <script>
+        async function zaladujStatusKonta() {
+            const oknoAlertu = document.getElementById('dynamic-alert');
+            oknoAlertu.style.display = 'block';
+            oknoAlertu.style.background = '#34495e'; // Domyślny kolor ładowania
+            
+            try {
+                const odp = await fetch('/api/ebok/dashboard-info');
+                if (!odp.ok) throw new Error('Błąd połączenia z serwerem');
+                
+                const dane = await odp.json();
+                
+                // Aktualizujemy kolor tła i wstrzykujemy treść HTML z backendu
+                oknoAlertu.style.background = dane.alertKolor;
+                oknoAlertu.innerHTML = dane.alertTekst;
+
+            } catch (error) {
+                console.error(error);
+                oknoAlertu.style.background = '#95a5a6';
+                oknoAlertu.innerHTML = 'Nie udało się wczytać statusu konta. Prosimy odświeżyć stronę.';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', zaladujStatusKonta);
+    </script>
+</body>
+</html>

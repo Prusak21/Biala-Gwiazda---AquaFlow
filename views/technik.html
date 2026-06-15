@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Dashboard Technika</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #1a5276; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+        
+        .status-badge { padding: 5px 10px; border-radius: 15px; font-size: 0.9em; font-weight: bold; display: inline-block; }
+        .status-reported { background: #ffeaa7; color: #d35400; }
+        .status-in_progress { background: #74b9ff; color: #0984e3; }
+        .status-resolved { background: #55efc4; color: #00b894; }
+        
+        .dashboard-grid { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px; }
+        .stat-card { background: white; padding: 25px; border-radius: 10px; flex: 1; min-width: 200px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .stat-card h3 { font-size: 36px; color: #1a5276; margin-bottom: 5px; }
+        .stat-card p { color: #7f8c8d; font-weight: bold; }
+        
+        .menu-grid { display: flex; gap: 15px; flex-wrap: wrap; margin-top: 30px; }
+        .menu-card { background: white; padding: 20px; border-radius: 10px; flex: 1; min-width: 180px; text-align: center; text-decoration: none; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: bold; transition: background 0.2s; }
+        .menu-card:hover { background: #e8f0fe; color: #1a5276; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - Panel Pracownika Terenowego</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/technik" style="background: #1a5276;">Dashboard</a>
+        <a href="/technik/mapa">Mapa Tras Odczytowych</a>
+        <a href="/technik/klienci">Lista Adresów / Klienci</a>
+        <a href="/technik/wprowadz">Wprowadzanie Odczytów</a>
+        <a href="/technik/raportuj">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section">
+            <h2 class="section-title">Podsumowanie bieżącego miesiąca</h2>
+            <div class="dashboard-grid" id="statsGrid">
+                <div class="stat-card">
+                    <h3 id="stat-zrobione" style="color: #27ae60;">--</h3>
+                    <p>Zrealizowane odczyty</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-pozostalo">--</h3>
+                    <p>Pozostało do odczytu</p>
+                </div>
+                <div class="stat-card">
+                    <h3 id="stat-awarie" style="color: #e74c3c;">--</h3>
+                    <p>Aktywne awarie</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">Bieżące Awarie w Terenie</h2>
+            <table id="tabela-awarii">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Zgłaszający</th>
+                        <th>Status</th>
+                        <th>Ostatni komunikat z bazy</th>
+                        <th>Data zgłoszenia</th>
+                    </tr>
+                </thead>
+                <tbody id="awarie-tbody">
+                    <tr>
+                        <td colspan="5" style="text-align: center; font-style: italic; color: #7f8c8d;">Ładowanie danych z serwera...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="menu-grid">
+            <a href="/technik/mapa" class="menu-card">🗺️ Mapa Tras Odczytowych</a>
+            <a href="/technik/klienci" class="menu-card">👥 Lista Adresów / Klienci</a>
+            <a href="/technik/wprowadz" class="menu-card">📝 Wprowadzanie Odczytów</a>
+            <a href="/technik/raportuj" class="menu-card">⚠️ Raportowanie Awarii</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p style="font-size: 12px; margin-top: 5px; color: #bdc3c7;">Wsparcie IT dla pracowników: it@aquaflow.jaworzno.pl | 32 123 45 99</p>
+    </div>
+
+    <script>
+        const statusy = {
+            'reported': { tekst: 'Zgłoszona', klasa: 'status-reported' },
+            'in_progress': { tekst: 'W naprawie', klasa: 'status-in_progress' },
+            'resolved': { tekst: 'Rozwiązana', klasa: 'status-resolved' }
+        };
+
+        async function zaladujDashboard() {
+            try {
+                const odpowiedz = await fetch('/api/technik/dashboard');
+                if (!odpowiedz.ok) throw new Error('Brak uprawnień lub błąd serwera');
+                
+                const dane = await odpowiedz.json();
+                
+                // 1. Aktualizacja statystyk
+                document.getElementById('stat-zrobione').innerText = dane.statystyki.zrobione;
+                document.getElementById('stat-pozostalo').innerText = dane.statystyki.pozostalo;
+                document.getElementById('stat-awarie').innerText = dane.statystyki.awarie_liczba;
+
+                // 2. Wypełnianie tabeli awarii
+                const cialoTabeli = document.getElementById('awarie-tbody');
+                cialoTabeli.innerHTML = ''; 
+
+                if (dane.awarie.length === 0) {
+                    cialoTabeli.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #7f8c8d;">Brak zgłoszonych awarii. Można wracać do bazy!</td></tr>';
+                    return;
+                }
+
+                dane.awarie.forEach(awaria => {
+                    const data = new Date(awaria.created_at).toLocaleString('pl-PL', { 
+                        year: 'numeric', month: '2-digit', day: '2-digit', 
+                        hour: '2-digit', minute: '2-digit' 
+                    });
+
+                    const statusInfo = statusy[awaria.current_status] || { tekst: awaria.current_status, klasa: '' };
+
+                    cialoTabeli.innerHTML += `
+                        <tr>
+                            <td><strong>#${awaria.id}</strong></td>
+                            <td>${awaria.zglaszajacy}</td>
+                            <td><span class="status-badge ${statusInfo.klasa}">${statusInfo.tekst}</span></td>
+                            <td>${awaria.najnowszy_komunikat || 'Brak opisu'}</td>
+                            <td>${data}</td>
+                        </tr>
+                    `;
+                });
+
+            } catch (error) {
+                console.error('Błąd:', error);
+                document.getElementById('awarie-tbody').innerHTML = `
+                    <tr>
+                        <td colspan="5" style="text-align: center; color: red;">
+                            Błąd połączenia z serwerem bazodanowym.
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', zaladujDashboard);
+    </script>
+</body>
+</html>

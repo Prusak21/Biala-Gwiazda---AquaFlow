@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Aktualności i Komunikaty</title>
+    <!-- TO JEST KLUCZ: Podpięcie globalnego pliku stylów! -->
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        /* Lokalne style tylko dla wnętrza komunikatów i tabelek */
+        .komunikat { background: #f9f9f9; border-radius: 8px; padding: 15px; margin-bottom: 15px; border-left: 5px solid #ffc107; }
+        .komunikat h3 { color: #1a5276; margin-bottom: 8px; }
+        .komunikat p { margin-bottom: 8px; line-height: 1.4; }
+        .data { color: #666; font-size: 12px; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #1a5276; color: white; }
+        .status-paid { color: #27ae60; font-weight: bold; }
+        .status-unpaid { color: #e74c3c; font-weight: bold; }
+        .status-overdue { color: #c0392b; font-weight: bold; text-decoration: underline; }
+        
+        .termin { background: #e8f0fe; padding: 10px; border-radius: 5px; margin-bottom: 10px; border-left: 5px solid #3498db; }
+        .termin-pilny { border-left-color: #e74c3c; background: #fdedec; }
+        
+        .brak { text-align: center; padding: 30px; color: #666; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty" style="background: #1a5276;">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+        
+        <div class="section">
+            <h2>Aktualne Komunikaty Sieciowe</h2>
+            <div id="komunikatyList">
+                <div class="brak">Ładowanie komunikatów...</div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>Ostatnie Faktury</h2>
+            <table id="fakturyTable">
+                <thead>
+                    <tr>
+                        <th>Okres</th>
+                        <th>Zużycie</th>
+                        <th>Kwota brutto</th>
+                        <th>Status</th>
+                        <th>Termin płatności</th>
+                    </tr>
+                </thead>
+                <tbody id="fakturyTableBody">
+                    <tr><td colspan="5" class="brak">Ładowanie faktur...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="section">
+            <h2>Ważne Terminy i Przypomnienia</h2>
+            <div id="terminyList">
+                <div class="brak">Ładowanie terminów...</div>
+            </div>
+        </div>
+        
+        <a href="/ebok" class="btn-back">← Wróć do Panelu głównego</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <script>
+        const statusyTlumaczenie = {
+            'paid': { tekst: 'Opłacona', klasa: 'status-paid' },
+            'unpaid': { tekst: 'Do zapłaty', klasa: 'status-unpaid' },
+            'overdue': { tekst: 'Zaległa!', klasa: 'status-overdue' }
+        };
+
+        function formatujDate(dataStr) {
+            return new Date(dataStr).toLocaleDateString('pl-PL');
+        }
+
+        async function zaladujDane() {
+            try {
+                const odp = await fetch('/api/ebok/komunikaty-faktury');
+                if (!odp.ok) throw new Error('Błąd serwera');
+                const dane = await odp.json();
+
+                // 1. KOMUNIKATY
+                const komList = document.getElementById('komunikatyList');
+                komList.innerHTML = '';
+                if (dane.komunikaty.length === 0) {
+                    komList.innerHTML = '<div class="brak">Brak aktywnych komunikatów dla Twojego rejonu.</div>';
+                } else {
+                    dane.komunikaty.forEach(k => {
+                        komList.innerHTML += `
+                            <div class="komunikat">
+                                <h3>${k.title}</h3>
+                                <p>${k.content}</p>
+                                <div class="data">Ważne do: ${formatujDate(k.valid_to)}</div>
+                            </div>
+                        `;
+                    });
+                }
+
+                // 2. FAKTURY
+                const fakBody = document.getElementById('fakturyTableBody');
+                fakBody.innerHTML = '';
+                if (dane.faktury.length === 0) {
+                    fakBody.innerHTML = '<tr><td colspan="5" class="brak">Brak faktur w systemie.</td></tr>';
+                } else {
+                    dane.faktury.forEach(f => {
+                        const status = statusyTlumaczenie[f.status] || { tekst: f.status, klasa: '' };
+                        fakBody.innerHTML += `
+                            <tr>
+                                <td>${formatujDate(f.period_start)} - ${formatujDate(f.period_end)}</td>
+                                <td>${parseFloat(f.consumption_m3).toFixed(2)} m³</td>
+                                <td><strong>${parseFloat(f.kwota_brutto).toFixed(2)} zł</strong></td>
+                                <td class="${status.klasa}">${status.tekst}</td>
+                                <td>${formatujDate(f.due_date)}</td>
+                            </tr>
+                        `;
+                    });
+                }
+
+                // 3. GENEROWANIE TERMINÓW
+                const terminyList = document.getElementById('terminyList');
+                terminyList.innerHTML = '';
+                let czySaTerminy = false;
+
+                // Szukamy nieopłaconych faktur
+                dane.faktury.forEach(f => {
+                    if (f.status === 'unpaid' || f.status === 'overdue') {
+                        czySaTerminy = true;
+                        const klasaPilna = f.status === 'overdue' ? 'termin-pilny' : '';
+                        const slowo = f.status === 'overdue' ? 'ZALEGŁOŚĆ' : 'Termin płatności';
+                        terminyList.innerHTML += `
+                            <div class="termin ${klasaPilna}">
+                                ${slowo} faktury (Kwota: ${parseFloat(f.kwota_brutto).toFixed(2)} zł): 
+                                <strong>${formatujDate(f.due_date)}</strong>
+                            </div>
+                        `;
+                    }
+                });
+
+                // Szukamy wygasających komunikatów
+                dane.komunikaty.forEach(k => {
+                    czySaTerminy = true;
+                    terminyList.innerHTML += `
+                        <div class="termin">
+                            Koniec utrudnień / Ważność komunikatu ("${k.title}"): 
+                            <strong>${formatujDate(k.valid_to)}</strong>
+                        </div>
+                    `;
+                });
+
+                if (!czySaTerminy) {
+                    terminyList.innerHTML = '<div class="brak">Brak nadchodzących terminów i przypomnień.</div>';
+                }
+
+            } catch (error) {
+                console.error(error);
+                document.getElementById('komunikatyList').innerHTML = '<div class="brak" style="color:red;">Błąd ładowania danych.</div>';
+                document.getElementById('fakturyTableBody').innerHTML = '<tr><td colspan="5" class="brak" style="color:red;">Błąd ładowania danych.</td></tr>';
+                document.getElementById('terminyList').innerHTML = '<div class="brak" style="color:red;">Błąd ładowania terminów.</div>';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', zaladujDane);
+    </script>
+</body>
+</html>

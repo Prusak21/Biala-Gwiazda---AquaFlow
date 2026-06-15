@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Panel Administratora</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #1a5276; color: white; padding: 20px 30px; display: flex; justify-content: space-between; align-items: center; }
+        .header h1 { font-size: 24px; }
+        .logout-btn { background: #e74c3c; color: white; padding: 8px 20px; text-decoration: none; border-radius: 5px; }
+        .nav { background: #2c3e50; padding: 0; }
+        .nav a { color: white; text-decoration: none; padding: 15px 25px; display: inline-block; }
+        .nav a:hover, .nav a.active { background: #1a5276; }
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
+        .admin-badge { background: #e74c3c; color: white; display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 14px; margin-bottom: 20px; }
+        
+        .stats { display: flex; gap: 20px; flex-wrap: wrap; margin: 30px 0; }
+        .stat-card { background: white; padding: 25px; border-radius: 10px; flex: 1; min-width: 200px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .stat-card h2 { font-size: 36px; color: #1a5276; transition: color 0.3s; }
+        .stat-card.alert h2 { color: #e74c3c; } /* Klasa dla alertów (np. długi/awarie) */
+        
+        .menu-grid { display: flex; gap: 15px; flex-wrap: wrap; margin: 30px 0; }
+        .menu-card { background: white; padding: 20px; border-radius: 10px; flex: 1; min-width: 180px; text-align: center; text-decoration: none; color: #333; box-shadow: 0 2px 5px rgba(0,0,0,0.1); font-weight: bold; transition: background 0.2s; }
+        .menu-card:hover { background: #e8f0fe; color: #1a5276; }
+        
+        .recent-box { background: white; padding: 20px; border-radius: 10px; margin-top: 20px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        .recent-box ul { margin-top: 15px; list-style: none; }
+        .recent-box li { padding: 10px 0; border-bottom: 1px solid #ddd; color: #2c3e50; }
+        .recent-box li:last-child { border-bottom: none; }
+        
+        .footer { background: #1a5276; color: white; text-align: center; padding: 25px; margin-top: 50px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - Panel Administratora</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+    
+    <div class="nav">
+        <a href="/admin" class="active">Dashboard</a>
+        <a href="/admin/uzytkownicy">Użytkownicy i Role</a>
+        <a href="/admin/biling">Moduł Bilingowy</a>
+        <a href="/admin/analityka">Moduł Analityki</a>
+        <a href="/admin/mapa">Mapa GIS</a>
+        <a href="/admin/komunikacja">Komunikacja</a>
+    </div>
+
+    <div class="container">
+        <div class="admin-badge">Jesteś: Admin / Urzędnik</div>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h2 id="stat-users">--</h2>
+                <p>Użytkowników</p>
+            </div>
+            <div class="stat-card">
+                <h2 id="stat-consumption">--</h2>
+                <p>Olicznikowane m³</p>
+            </div>
+            <div class="stat-card" id="card-incidents">
+                <h2 id="stat-incidents">--</h2>
+                <p>Aktywne awarie</p>
+            </div>
+            <div class="stat-card" id="card-debt">
+                <h2 id="stat-debt">--</h2>
+                <p>Zaległości brutto</p>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            <a href="/admin/uzytkownicy" class="menu-card">👥 Użytkownicy i Role</a>
+            <a href="/admin/biling" class="menu-card">💰 Moduł Bilingowy</a>
+            <a href="/admin/analityka" class="menu-card">📈 Moduł Analityki</a>
+            <a href="/admin/mapa" class="menu-card">🗺️ Mapa GIS</a>
+            <a href="/admin/komunikacja" class="menu-card">📢 Komunikacja</a>
+        </div>
+
+        <div class="recent-box">
+            <h3>Ostatnie aktywności w systemie</h3>
+            <ul id="activities-list">
+                <li style="text-align: center; color: #7f8c8d; font-style: italic;">Pobieranie logów systemu...</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+    </div>
+    
+    <script>
+        async function zaladujDashboardAdmina() {
+            try {
+                const odpowiedz = await fetch('/api/admin/dashboard');
+                if (!odpowiedz.ok) throw new Error('Brak autoryzacji lub błąd serwera');
+                
+                const statystyki = await odpowiedz.json();
+                
+                // Aktualizacja głównych liczników
+                document.getElementById('stat-users').innerText = statystyki.users;
+                document.getElementById('stat-consumption').innerText = statystyki.consumption;
+                
+                // Awarie z kolorowaniem
+                const incidentsElem = document.getElementById('stat-incidents');
+                incidentsElem.innerText = statystyki.incidents;
+                if (parseInt(statystyki.incidents) > 0) {
+                    document.getElementById('card-incidents').classList.add('alert');
+                }
+
+                // Długi z formatowaniem
+                const debtElem = document.getElementById('stat-debt');
+                debtElem.innerText = statystyki.debt + ' zł';
+                if (parseFloat(statystyki.debt) > 1000) {
+                    document.getElementById('card-debt').classList.add('alert');
+                }
+
+                // Wypełnianie aktywności
+                const listaAktywnosci = document.getElementById('activities-list');
+                listaAktywnosci.innerHTML = '';
+                
+                if (statystyki.activities.length === 0) {
+                    listaAktywnosci.innerHTML = '<li>Brak nowej aktywności w systemie.</li>';
+                } else {
+                    statystyki.activities.forEach(akcja => {
+                        const li = document.createElement('li');
+                        li.innerText = akcja.opis;
+                        listaAktywnosci.appendChild(li);
+                    });
+                }
+
+            } catch (error) {
+                console.error('Błąd:', error);
+                document.getElementById('activities-list').innerHTML = `
+                    <li style="color: red; text-align: center;">Nie udało się nawiązać połączenia z bazą danych.</li>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', zaladujDashboardAdmina);
+    </script>
+</body>
+</html>

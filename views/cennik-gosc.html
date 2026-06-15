@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Cennik</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, sans-serif; background: #f5f5f5; }
+        .header { background: #1a5276; color: white; padding: 40px; text-align: center; }
+        .header h1 { font-size: 42px; }
+        .header p { margin-top: 10px; font-size: 18px; }
+        .nav { background: white; padding: 15px; text-align: center; border-bottom: 1px solid #ddd; }
+        .nav a { color: #1a5276; text-decoration: none; margin: 0 20px; font-weight: bold; }
+        .container { max-width: 900px; margin: 40px auto; padding: 0 20px; }
+        .info-box { background: #e8f0fe; padding: 20px; border-radius: 10px; margin-bottom: 30px; text-align: center; }
+        .guest-badge { background: #ffc107; color: #333; display: inline-block; padding: 5px 15px; border-radius: 20px; font-size: 14px; }
+        
+        table { width: 100%; background: white; border-collapse: collapse; border-radius: 10px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        th { background: #1a5276; color: white; padding: 15px; text-align: left; }
+        td { padding: 15px; border-bottom: 1px solid #ddd; }
+        tr:hover { background-color: #f9f9f9; }
+        .cena { font-weight: bold; color: #1a5276; }
+        
+        .footer { background: #1a5276; color: white; text-align: center; padding: 25px; margin-top: 50px; }
+        .btn-back { background: #6c757d; color: white; padding: 10px 25px; text-decoration: none; border-radius: 5px; display: inline-block; }
+        .brak { text-align: center; padding: 20px; color: #7f8c8d; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow</h1>
+        <p>Cennik usług</p>
+    </div>
+    
+    <div class="nav">
+        <a href="/">Strona główna</a>
+        <a href="/cennik">Cennik</a>
+        <a href="/komunikaty">Komunikaty</a>
+        <a href="/logowanie">Zaloguj się</a>
+    </div>
+    
+    <div class="container">
+        <div class="info-box">
+            <span class="guest-badge">Jesteś: Gość (Niezalogowany)</span>
+            <p style="margin-top: 10px; font-size: 14px; color: #555;">Poniższe ceny są kwotami netto. Do faktury doliczany jest podatek VAT (8%).</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Taryfa</th>
+                    <th>Cena netto za m³</th>
+                    <th>Okres obowiązywania</th>
+                </tr>
+            </thead>
+            <tbody id="taryfyBody">
+                <tr><td colspan="3" class="brak">Ładowanie cennika...</td></tr>
+            </tbody>
+        </table>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Opłata</th>
+                    <th>Kwota netto</th>
+                </tr>
+            </thead>
+            <tbody id="oplatyBody">
+                <tr><td colspan="2" class="brak">Ładowanie opłat...</td></tr>
+            </tbody>
+        </table>
+
+        <div style="text-align: center;">
+            <a href="/" class="btn-back"> Wróć</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow</p>
+    </div>
+
+    <script>
+        function formatujDate(dataZBazy) {
+            if (!dataZBazy) return 'Nadal obowiązuje';
+            return new Date(dataZBazy).toLocaleDateString('pl-PL');
+        }
+
+        function formatujCene(cena) {
+            return parseFloat(cena).toFixed(2).replace('.', ',') + ' zł';
+        }
+
+        async function zaladujPublicznyCennik() {
+            try {
+                const odpowiedz = await fetch('/api/public/cennik');
+                if (!odpowiedz.ok) throw new Error('Błąd pobierania danych');
+                
+                const dane = await odpowiedz.json();
+                
+                // 1. TABELA TARYF
+                const taryfyTbody = document.getElementById('taryfyBody');
+                taryfyTbody.innerHTML = '';
+                
+                if (dane.taryfy.length === 0) {
+                    taryfyTbody.innerHTML = '<tr><td colspan="3" class="brak">Brak zdefiniowanych taryf.</td></tr>';
+                } else {
+                    dane.taryfy.forEach(taryfa => {
+                        const wiersz = document.createElement('tr');
+                        
+                        const tekstOkresu = taryfa.wazne_do === null 
+                            ? `od ${formatujDate(taryfa.wazne_od)}` 
+                            : `${formatujDate(taryfa.wazne_od)} - ${formatujDate(taryfa.wazne_do)}`;
+
+                        wiersz.innerHTML = `
+                            <td>${taryfa.nazwa}</td>
+                            <td class="cena">${formatujCene(taryfa.cena)}</td>
+                            <td>${tekstOkresu}</td>
+                        `;
+                        taryfyTbody.appendChild(wiersz);
+                    });
+                }
+
+                // 2. TABELA OPŁAT
+                const oplatyTbody = document.getElementById('oplatyBody');
+                oplatyTbody.innerHTML = '';
+                
+                dane.oplaty.forEach(oplata => {
+                    const wiersz = document.createElement('tr');
+                    wiersz.innerHTML = `
+                        <td>${oplata.nazwa}</td>
+                        <td class="cena">${formatujCene(oplata.kwota)} ${oplata.jednostka}</td>
+                    `;
+                    oplatyTbody.appendChild(wiersz);
+                });
+
+            } catch (error) {
+                console.error('Błąd:', error);
+                document.getElementById('taryfyBody').innerHTML = `<tr><td colspan="3" class="brak" style="color: red;">Nie udało się połączyć z bazą danych.</td></tr>`;
+                document.getElementById('oplatyBody').innerHTML = `<tr><td colspan="2" class="brak" style="color: red;">Nie udało się połączyć z bazą danych.</td></tr>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', zaladujPublicznyCennik);
+    </script>
+</body>
+</html>
