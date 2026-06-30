@@ -23,9 +23,15 @@
                 <input type="password" id="haslo" class="form-control" placeholder="****" required>
             </div>
 
-            <div class="mb-4">
+            <div class="mb-3">
                 <label class="form-label">Powtórz hasło</label>
                 <input type="password" id="powtorz_haslo" class="form-control" placeholder="****" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Numer seryjny licznika</label>
+                <input type="text" id="numer_licznika" class="form-control" placeholder="np. M-NOWAK-001" required>
+                <div class="form-text">Numer znajdziesz na obudowie wodomierza lub w umowie z AquaFlow.</div>
             </div>
 
             <input type="hidden" id="role_id" value="3">
@@ -47,6 +53,7 @@
             const haslo = document.getElementById('haslo').value;
             const powtorz_haslo = document.getElementById('powtorz_haslo').value;
             const role_id = document.getElementById('role_id').value;
+            const numer_licznika = document.getElementById('numer_licznika').value;
             
             const errorAlert = document.getElementById('error-alert');
             const successAlert = document.getElementById('success-alert');
@@ -70,7 +77,8 @@
                         email: email, 
                         haslo: haslo, 
                         powtorz_haslo: powtorz_haslo, 
-                        role_id: role_id 
+                        role_id: role_id,
+                        numer_licznika: numer_licznika
                     })
                 });
 

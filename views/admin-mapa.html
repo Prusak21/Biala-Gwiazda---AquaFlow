@@ -67,67 +67,96 @@
     </div>
     
     <script>
-        // Inicjalizacja Mapy Leaflet (centrowana na Jaworzno/Śląsk)
-        const map = L.map('map').setView([50.198, 19.263], 12);
+        const map = L.map('map').setView([52.069, 19.480], 6);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap'
         }).addTo(map);
 
-        // Ikonki Leaflet
-        const blueIcon = new L.Icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
-        const greenIcon = new L.Icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
-        const redIcon = new L.Icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
+        const greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
 
-        async function zaladujGIS() {
+        const redIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+
+        const orangeIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-orange.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+        });
+
+        async function zaladujMape() {
             try {
-                const odp = await fetch('/api/admin/gis');
-                if (!odp.ok) throw new Error('Błąd pobierania danych przestrzennych');
-                const dane = await odp.json();
-
                 const markersGroup = L.featureGroup().addTo(map);
 
-                // 1. Dodawanie Węzłów (Niebieskie)
-                dane.wezly.forEach(wezel => {
-                    const geo = JSON.parse(wezel.lokalizacja);
-                    const marker = L.marker([geo.coordinates[1], geo.coordinates[0]], { icon: blueIcon });
-                    marker.bindPopup(`<strong>Zasobnik/Węzeł:</strong><br>${wezel.name}`);
-                    markersGroup.addLayer(marker);
-                });
+                // 1. POBIERANIE LICZNIKÓW
+                const odpLiczniki = await fetch('/api/technik/mapa-punkty');
+                if (odpLiczniki.ok) {
+                    const liczniki = await odpLiczniki.json();
+                    liczniki.forEach(licznik => {
+                        const geoData = JSON.parse(licznik.lokalizacja);
+                        const lng = geoData.coordinates[0];
+                        const lat = geoData.coordinates[1];
 
-                // 2. Dodawanie Liczników Klientów (Zielone)
-                dane.liczniki.forEach(licznik => {
-                    if (licznik.lokalizacja) {
-                        const geo = JSON.parse(licznik.lokalizacja);
-                        const marker = L.marker([geo.coordinates[1], geo.coordinates[0]], { icon: greenIcon });
-                        marker.bindPopup(`<strong>Licznik #${licznik.id}</strong><br>SN: ${licznik.serial_number}<br>Klient: ${licznik.email || 'Brak danych'}`);
+                        const ikonka = licznik.czy_odczytano ? greenIcon : redIcon;
+                        const statusTekst = licznik.czy_odczytano ? '<b style="color:green">Wykonano</b>' : '<b style="color:red">Do odczytu</b>';
+                        const przyciskHtml = licznik.czy_odczytano ? '' : `<br><br><a href="/technik/wprowadz?meterId=${licznik.id}" style="background:#e67e22; color:white; padding:5px 10px; text-decoration:none; border-radius:3px; display:block; text-align:center;">Wprowadź odczyt</a>`;
+
+                        const marker = L.marker([lat, lng], { icon: ikonka });
+                        marker.bindPopup(`
+                            <div style="font-size: 1.1em;">
+                                <strong>🏠 ${licznik.adres}</strong><br>
+                                Licznik: ${licznik.numer_licznika}<br>
+                                Status: ${statusTekst}
+                                ${przyciskHtml}
+                            </div>
+                        `);
                         markersGroup.addLayer(marker);
-                    }
-                });
+                    });
+                }
 
-                // 3. Dodawanie Awarii (Czerwone)
-                dane.awarie.forEach(awaria => {
-                    if (awaria.lokalizacja) {
-                        const geo = JSON.parse(awaria.lokalizacja);
-                        const marker = L.marker([geo.coordinates[1], geo.coordinates[0]], { icon: redIcon });
-                        marker.bindPopup(`<strong>⚠️ Zgłoszenie #${awaria.id}</strong><br>Status: ${awaria.current_status}`);
-                        markersGroup.addLayer(marker);
-                    }
-                });
+                // 2. POBIERANIE AWARII
+                const odpAwarie = await fetch('/api/awarie');
+                if (odpAwarie.ok) {
+                    const awarie = await odpAwarie.json();
+                    awarie.forEach(awaria => {
+                        // Sprawdzamy, czy awaria w ogóle ma przypisaną lokalizację GPS
+                        if (awaria.lokalizacja) {
+                            const geoData = JSON.parse(awaria.lokalizacja);
+                            const lng = geoData.coordinates[0];
+                            const lat = geoData.coordinates[1];
 
-                // Centruj mapę, aby objąć wszystkie punkty
+                            const marker = L.marker([lat, lng], { icon: orangeIcon });
+                            marker.bindPopup(`
+                                <div style="font-size: 1.1em;">
+                                    <strong>⚠️ Zgłoszona Awaria #${awaria.id}</strong><br>
+                                    Status: ${awaria.current_status}<br>
+                                    Opis: ${awaria.najnowszy_komunikat || 'Brak dodatkowych informacji'}
+                                </div>
+                            `);
+                            markersGroup.addLayer(marker);
+                        }
+                    });
+                }
+
+                // Automatyczne centrowanie widoku
                 if (markersGroup.getLayers().length > 0) {
                     map.fitBounds(markersGroup.getBounds(), { padding: [50, 50] });
                 }
 
-            } catch (err) {
-                console.error(err);
-                alert("Wystąpił błąd podczas ładowania danych GIS. Sprawdź konsolę.");
+            } catch (error) {
+                console.error('Błąd podczas ładowania danych mapy:', error);
             }
         }
 
-        document.addEventListener('DOMContentLoaded', zaladujGIS);
+        document.addEventListener('DOMContentLoaded', zaladujMape);
     </script>
 </body>
 </html>

@@ -6,8 +6,11 @@
     <title>AquaFlow - Mapa Tras Odczytowych</title>
     <link rel="stylesheet" href="/style.css">
     
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
+    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
 
     <style>
         #map { 
@@ -38,7 +41,14 @@
         <a href="/technik/wprowadz">Wprowadzanie Odczytów</a>
         <a href="/technik/raportuj">Raportowanie Awarii</a>
     </div>
-    
+    <div class="section">
+            <h2 class="section-title">Twoje punkty odczytowe i zgłoszenia na dziś</h2>
+            
+            <button id="btn-trasa" onclick="wyznaczOptymalnaTrase()" style="margin-bottom: 15px; padding: 10px 15px; background: #27ae60; color: white; font-weight: bold; border: none; border-radius: 5px; cursor: pointer; width: 100%;">
+                📍 Wyznacz optymalną trasę (Najbliższy Sąsiad)
+            </button>
+            
+            <div id="map"></div>
     <div class="container">
         <div class="user-badge technik">Rola: Pracownik Terenowy</div>
         
@@ -62,7 +72,7 @@
     </div>
     
     <script>
-        const map = L.map('map').setView([52.069, 19.480], 6);
+       const map = L.map('map').setView([50.20, 19.27], 13); // Wycentrowałem od razu na Jaworzno
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
@@ -87,9 +97,14 @@
             iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
         });
 
+        // ZMIANA: Globalne zmienne do przetrzymywania nieodczytanych punktów i aktualnej trasy
+        let punktyDoOdczytu = [];
+        let routingControl = null;
+
         async function zaladujMape() {
             try {
                 const markersGroup = L.featureGroup().addTo(map);
+                punktyDoOdczytu = []; // Czyszczenie listy przy każdym załadowaniu
 
                 // 1. POBIERANIE LICZNIKÓW
                 const odpLiczniki = await fetch('/api/technik/mapa-punkty');
@@ -114,20 +129,23 @@
                             </div>
                         `);
                         markersGroup.addLayer(marker);
+
+                        // ZMIANA: Zapisujemy współrzędne czerwonych markerów do tablicy tras
+                        if (!licznik.czy_odczytano) {
+                            punktyDoOdczytu.push(L.latLng(lat, lng));
+                        }
                     });
                 }
 
-                // 2. POBIERANIE AWARII
+                // 2. POBIERANIE AWARII (pozostaje bez zmian)
                 const odpAwarie = await fetch('/api/awarie');
                 if (odpAwarie.ok) {
                     const awarie = await odpAwarie.json();
                     awarie.forEach(awaria => {
-                        // Sprawdzamy, czy awaria w ogóle ma przypisaną lokalizację GPS
                         if (awaria.lokalizacja) {
                             const geoData = JSON.parse(awaria.lokalizacja);
                             const lng = geoData.coordinates[0];
                             const lat = geoData.coordinates[1];
-
                             const marker = L.marker([lat, lng], { icon: orangeIcon });
                             marker.bindPopup(`
                                 <div style="font-size: 1.1em;">
@@ -141,7 +159,6 @@
                     });
                 }
 
-                // Automatyczne centrowanie widoku
                 if (markersGroup.getLayers().length > 0) {
                     map.fitBounds(markersGroup.getBounds(), { padding: [50, 50] });
                 }
@@ -149,6 +166,55 @@
             } catch (error) {
                 console.error('Błąd podczas ładowania danych mapy:', error);
             }
+        }
+
+        // ZMIANA: NOWA FUNKCJA DO RYSOWANIA OPTYMALNEJ TRASY
+        function wyznaczOptymalnaTrase() {
+            if (punktyDoOdczytu.length === 0) {
+                alert("Brak punktów do odczytu na mapie!");
+                return;
+            }
+
+            // Ustawiamy punkt startowy - np. centrum Jaworzna (Śródmieście)
+            const punktStartowy = L.latLng(50.20, 19.27);
+            
+            // Algorytm "Najbliższy Sąsiad" (Nearest Neighbor) do sortowania punktów
+            let nieodwiedzone = [...punktyDoOdczytu];
+            let posortowaneOpcje = [punktStartowy];
+            let aktualnyPunkt = punktStartowy;
+
+            while (nieodwiedzone.length > 0) {
+                let najblizszyIndex = 0;
+                let minimalnyDystans = map.distance(aktualnyPunkt, nieodwiedzone[0]);
+
+                for (let i = 1; i < nieodwiedzone.length; i++) {
+                    let dystans = map.distance(aktualnyPunkt, nieodwiedzone[i]);
+                    if (dystans < minimalnyDystans) {
+                        minimalnyDystans = dystans;
+                        najblizszyIndex = i;
+                    }
+                }
+                
+                let nastepnyPunkt = nieodwiedzone.splice(najblizszyIndex, 1)[0];
+                posortowaneOpcje.push(nastepnyPunkt);
+                aktualnyPunkt = nastepnyPunkt;
+            }
+
+            // Usunięcie poprzedniej trasy, jeśli istnieje
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            // Narysowanie nowej, zoptymalizowanej trasy po drogach
+            routingControl = L.Routing.control({
+                waypoints: posortowaneOpcje,
+                routeWhileDragging: false,
+                addWaypoints: false, // Blokuje możliwość ręcznego dodawania punktów przez kliknięcie na trasę
+                lineOptions: {
+                    styles: [{color: '#3498db', opacity: 0.8, weight: 6}] // Ładny niebieski kolor trasy
+                },
+                show: false // Ukrywa panel z tekstowymi wskazówkami "skręć w prawo", zostawia samą trasę na mapie
+            }).addTo(map);
         }
 
         document.addEventListener('DOMContentLoaded', zaladujMape);

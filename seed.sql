@@ -70,8 +70,9 @@ INSERT INTO meters (user_id, sector_id, serial_number, address, geom, is_main_me
 (NULL, 2, 'MAIN-SZCZ-01', 'Węzeł Szczakowa', ST_GeomFromText('POINT(19.27 50.23)', 4326), TRUE),     -- ID 2
 (3, 1, 'M-NOWAK-001', 'ul. Grunwaldzka 12', ST_GeomFromText('POINT(19.265 50.195)', 4326), FALSE),     -- ID 3
 (4, 1, 'M-KOWALSKA-001', 'ul. Mickiewicza 5', ST_GeomFromText('POINT(19.275 50.205)', 4326), FALSE),   -- ID 4
-(5, 2, 'M-WISNIEW-001', 'ul. Kolejarzy 18', ST_GeomFromText('POINT(19.280 50.235)', 4326), FALSE);     -- ID 5
-
+(5, 2, 'M-WISNIEW-001', 'ul. Kolejarzy 18', ST_GeomFromText('POINT(19.280 50.235)', 4326), FALSE),     -- ID 5
+(NULL, 1, 'M-TEST-001', 'ul. Sienkiewicza 10', ST_GeomFromText('POINT(19.268 50.198)', 4326), FALSE),  -- ID 6 (Śródmieście)
+(NULL, 2, 'M-TEST-002', 'ul. Dworcowa 3', ST_GeomFromText('POINT(19.275 50.225)', 4326), FALSE);       -- ID 7 (Szczakowa)
 -- 9. ODCZYTY (Zachowujące ścisłą chronologię dla Triggera)
 -- BAZA STARTOWA (Miesiąc temu)
 INSERT INTO readings (meter_id, value, reading_date, is_verified) VALUES 
