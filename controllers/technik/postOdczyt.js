@@ -19,7 +19,7 @@ const postOdczyt = async (req, res) => {
         }
 
         await pool.query(
-            'INSERT INTO readings (meter_id, value, reading_date, is_verified) VALUES ($1, $2, CURRENT_DATE, FALSE)',
+            'INSERT INTO readings (meter_id, value, reading_date, is_verified) VALUES ($1, $2, CURRENT_DATE, TRUE)',
             [meter_id, value]
         );
 
