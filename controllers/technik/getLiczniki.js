@@ -7,20 +7,14 @@ const getLiczniki = async (req, res) => {
                 m.id,
                 m.address AS adres,
                 m.serial_number AS numer_licznika,
-                (
-                    SELECT value 
-                    FROM readings r 
-                    WHERE r.meter_id = m.id AND r.is_verified = TRUE 
-                    ORDER BY reading_date DESC 
-                    LIMIT 1
-                ) AS ostatni_odczyt,
-                EXISTS (
-                    SELECT 1 
-                    FROM readings r2 
-                    WHERE r2.meter_id = m.id 
-                    AND DATE_TRUNC('month', r2.reading_date) = DATE_TRUNC('month', CURRENT_DATE)
-                ) AS czy_odczytano_w_tym_miesiacu
+                r.id AS aktualny_odczyt_id,
+                r.value AS aktualny_odczyt_wartosc,
+                r.is_verified AS czy_zweryfikowany,
+                r.photo_url AS zdjecie_url
             FROM meters m
+            -- LEFT JOIN pozwala nam dołączyć TYLKO odczyt z tego miesiąca (jeśli istnieje)
+            LEFT JOIN readings r ON r.meter_id = m.id 
+                AND DATE_TRUNC('month', r.reading_date) = DATE_TRUNC('month', CURRENT_DATE)
             WHERE m.is_main_meter = FALSE
             ORDER BY m.address ASC;
         `;

@@ -127,11 +127,24 @@ SELECT id, (id * 1000) + 128.00, DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1
 INSERT INTO readings (meter_id, value, reading_date, is_verified)
 SELECT id, (id * 1000) + 4300.00, DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month', TRUE FROM meters WHERE is_main_meter = TRUE;
 
--- ODCZYTY BIEŻĄCE (Ten miesiąc, połowa jeszcze nie zweryfikowana przez Inkasenta)
---INSERT INTO readings (meter_id, value, reading_date, is_verified)
---SELECT id, (id * 1000) + 142.50, DATE_TRUNC('month', CURRENT_DATE), (id % 2 = 0) FROM meters WHERE is_main_meter = FALSE;
---INSERT INTO readings (meter_id, value, reading_date, is_verified)
---SELECT id, (id * 1000) + 6500.00, DATE_TRUNC('month', CURRENT_DATE), TRUE FROM meters WHERE is_main_meter = TRUE;
+-- ODCZYTY BIEŻĄCE (Ten miesiąc)
+-- UWAGA: Celowo pomijamy użytkowników ID 3 (Jan) i 4 (Anna), by zostawić miejsce na testy ręczne!
+INSERT INTO readings (meter_id, value, reading_date, is_verified)
+SELECT id, (id * 1000) + 142.50, DATE_TRUNC('month', CURRENT_DATE), (id % 2 = 0) 
+FROM meters 
+WHERE is_main_meter = FALSE AND user_id NOT IN (3, 4);
+
+-- Główne liczniki wtłaczające (bez zmian)
+INSERT INTO readings (meter_id, value, reading_date, is_verified)
+SELECT id, (id * 1000) + 6500.00, DATE_TRUNC('month', CURRENT_DATE), TRUE 
+FROM meters 
+WHERE is_main_meter = TRUE;
+
+-- WOLNE LICZNIKI (user_id = NULL) - Oczekujące na nowych mieszkańców podczas rejestracji!
+INSERT INTO meters (user_id, sector_id, serial_number, address, geom, is_main_meter) VALUES 
+(NULL, 1, 'M-FREE-001', 'ul. Królowej Jadwigi 15, Śródmieście', ST_GeomFromText('POINT(19.268 50.203)', 4326), FALSE),
+(NULL, 4, 'M-FREE-002', 'ul. Katowicka 33, Os. Stałe', ST_GeomFromText('POINT(19.245 50.205)', 4326), FALSE),
+(NULL, 5, 'M-FREE-003', 'ul. Dąbrowska 12, Bory', ST_GeomFromText('POINT(19.295 50.170)', 4326), FALSE);
 
 -- 10. FAKTURY (Automatycznie przeliczane przez PostgreSQL - potężny materiał testowy dla e-BOKa)
 -- Generujemy faktury za 2 miesiące wstecz (Dawno OPŁACONE - Na zielono)
