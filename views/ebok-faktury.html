@@ -1,1 +1,149 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="pl"><body><h1>e-Faktury i Płatności</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+=======
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - e-Faktury i Płatności</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #2980b9; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+        
+        /* Kolorowanie statusów faktur */
+        .status-badge { padding: 5px 10px; border-radius: 15px; font-size: 0.9em; font-weight: bold; }
+        .status-paid { background: #d4edda; color: #155724; }     /* Zielony */
+        .status-unpaid { background: #fff3cd; color: #856404; }   /* Żółty */
+        .status-overdue { background: #f8d7da; color: #721c24; }  /* Czerwony */
+        
+        /* Przyciski akcji */
+        .btn-action { padding: 6px 12px; border: none; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-right: 5px; text-decoration: none; display: inline-block; }
+        .btn-pay { background: #27ae60; color: white; }
+        .btn-pay:hover { background: #219a52; }
+        .btn-pdf { background: #7f8c8d; color: white; }
+        .btn-pdf:hover { background: #95a5a6; }
+        
+        .empty-row { text-align: center; font-style: italic; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury" style="background: #1a5276;">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="section">
+            <h2 class="page-title">Twoje Faktury</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Numer Faktury</th>
+                        <th>Okres rozliczeniowy</th>
+                        <th>Kwota brutto</th>
+                        <th>Termin płatności</th>
+                        <th>Status</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody id="faktury-tbody">
+                    <tr><td colspan="6" class="empty-row">Trwa pobieranie danych z systemu...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/ebok" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <script>
+        // Słownik tłumaczący statusy z bazy na język polski i style CSS
+        const tlumaczenieStatusow = {
+            'paid': { tekst: 'Opłacona', klasa: 'status-paid' },
+            'unpaid': { tekst: 'Do zapłaty', klasa: 'status-unpaid' },
+            'overdue': { tekst: 'Zaległa', klasa: 'status-overdue' }
+        };
+
+        // Pomocnicza funkcja formatująca datę
+        function formatujDate(dataZSerwera) {
+            const data = new Date(dataZSerwera);
+            return data.toLocaleDateString('pl-PL');
+        }
+
+        async function pobierzFaktury() {
+            try {
+                const odpowiedz = await fetch('/api/ebok/faktury');
+                if (!odpowiedz.ok) throw new Error('Błąd serwera przy pobieraniu faktur');
+                
+                const faktury = await odpowiedz.json();
+                const tabela = document.getElementById('faktury-tbody');
+                tabela.innerHTML = '';
+
+                if (faktury.length === 0) {
+                    tabela.innerHTML = '<tr><td colspan="6" class="empty-row">Brak faktur przypisanych do tego konta.</td></tr>';
+                    return;
+                }
+
+                faktury.forEach(faktura => {
+                    const wiersz = document.createElement('tr');
+                    
+                    const okres = `${formatujDate(faktura.period_start)} - ${formatujDate(faktura.period_end)}`;
+                    const kwota = parseFloat(faktura.kwota_brutto).toFixed(2) + ' zł';
+                    const termin = formatujDate(faktura.due_date);
+                    
+                    const statusInfo = tlumaczenieStatusow[faktura.status] || { tekst: faktura.status, klasa: '' };
+                    
+                    // Generowanie przycisków w zależności od statusu (opłacona faktura nie ma przycisku "Opłać")
+                    let przyciski = `<button class="btn-action btn-pdf" onclick="alert('Generowanie pliku PDF dla faktury FV-${faktura.id}...')">⬇ PDF</button>`;
+                    
+                    if (faktura.status === 'unpaid' || faktura.status === 'overdue') {
+                        przyciski += `<button class="btn-action btn-pay" onclick="alert('Przekierowanie do bramki płatności PayU (Kwota: ${kwota})...')">💳 Opłać</button>`;
+                    }
+
+                    wiersz.innerHTML = `
+                        <td><strong>FV-${new Date(faktura.period_end).getFullYear()}/${faktura.id}</strong></td>
+                        <td>${okres}</td>
+                        <td><strong>${kwota}</strong></td>
+                        <td>${termin}</td>
+                        <td><span class="status-badge ${statusInfo.klasa}">${statusInfo.tekst}</span></td>
+                        <td>${przyciski}</td>
+                    `;
+                    
+                    tabela.appendChild(wiersz);
+                });
+
+            } catch (error) {
+                console.error('Błąd:', error);
+                document.getElementById('faktury-tbody').innerHTML = `
+                    <tr><td colspan="6" class="empty-row" style="color: red;">Nie udało się połączyć z bazą danych.</td></tr>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', pobierzFaktury);
+    </script>
+</body>
+</html>
+>>>>>>> naprawiona_mapa_i_nr_licznika

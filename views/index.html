@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<<<<<<< HEAD
 <html lang="pl"><body>
     <h1>Strona Główna</h1><p>Jesteś: Gość niezalogowany</p>
     <ul>
@@ -7,3 +8,110 @@
         <li><a href="/logowanie">Logowanie / Rejestracja</a></li>
     </ul>
 </body></html>
+=======
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - System Gospodarki Wodnej</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: Arial, Helvetica, sans-serif; background: #f5f5f5; line-height: 1.6; }
+        
+        .header { background: #1a5276; color: white; padding: 60px 20px; text-align: center; }
+        .header h1 { font-size: 48px; margin-bottom: 10px; }
+        .header p { font-size: 18px; opacity: 0.9; }
+        
+        .nav { background: white; padding: 15px; text-align: center; border-bottom: 1px solid #ddd; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .nav a { color: #1a5276; text-decoration: none; margin: 0 20px; font-weight: bold; transition: color 0.2s; }
+        .nav a:hover, .nav a.active { color: #e74c3c; }
+        
+        .container { max-width: 1100px; margin: 40px auto; padding: 0 20px; }
+        
+        .info-box { background: #e8f0fe; padding: 25px; border-radius: 10px; margin-bottom: 40px; text-align: center; border-left: 5px solid #3498db; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .guest-badge { background: #ffc107; color: #333; display: inline-block; padding: 6px 18px; border-radius: 20px; font-size: 14px; font-weight: bold; }
+        
+        .features { display: flex; gap: 20px; flex-wrap: wrap; margin: 40px 0; }
+        .card { background: white; padding: 30px 20px; border-radius: 10px; flex: 1; min-width: 250px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); text-align: center; transition: transform 0.3s, box-shadow 0.3s; }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 8px 15px rgba(0,0,0,0.1); border-bottom: 3px solid #3498db; }
+        .card h3 { color: #1a5276; margin: 15px 0 10px; }
+        .card p { color: #666; font-size: 14px; }
+        .icon { font-size: 50px; display: block; margin-bottom: 10px; }
+        
+        .cta-section { text-align: center; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        .btn { background: #27ae60; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; display: inline-block; margin: 10px 5px; font-weight: bold; transition: background 0.2s; }
+        .btn:hover { background: #219a52; }
+        .btn-outline { background: transparent; color: #1a5276; border: 2px solid #1a5276; }
+        .btn-outline:hover { background: #1a5276; color: white; }
+        
+        .footer { background: #1a5276; color: white; text-align: center; padding: 30px; margin-top: 50px; }
+        .footer p { margin-bottom: 5px; color: #ecf0f1; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow</h1>
+        <p>Nowoczesny System Gospodarki Wodnej dla Twojego Miasta</p>
+    </div>
+
+    <div class="nav">
+        <a href="/" class="active">Strona główna</a>
+        <a href="/cennik">Cennik</a>
+        <a href="/komunikaty">Komunikaty</a>
+        <a href="/logowanie">Zaloguj się</a>
+    </div>
+
+    <div class="container">
+        <div class="info-box">
+            <span class="guest-badge">Witaj, Gościu!</span>
+            <p style="margin-top: 15px; font-size: 16px; color: #2c3e50;">AquaFlow to kompleksowe rozwiązanie do zarządzania siecią wodociągową. Zaloguj się, aby uzyskać dostęp do swojego konta e-BOK, opłacić faktury i śledzić swoje zużycie wody.</p>
+        </div>
+
+        <div class="features">
+            <div class="card">
+                <span class="icon">📊</span>
+                <h3>Bilansowanie wody</h3>
+                <p>Automatyczne wykrywanie strat w sieci wodociągowej dzięki zaawansowanym algorytmom.</p>
+            </div>
+            <div class="card">
+                <span class="icon">🗺️</span>
+                <h3>Mapa interaktywna</h3>
+                <p>Precyzyjna lokalizacja awarii i liczników na żywo z wykorzystaniem systemu GIS.</p>
+            </div>
+            <div class="card">
+                <span class="icon">📱</span>
+                <h3>e-BOK dla mieszkańców</h3>
+                <p>Wygodne sprawdzanie rachunków, podawanie odczytów i zgłaszanie usterki online.</p>
+            </div>
+            <div class="card">
+                <span class="icon">🔧</span>
+                <h3>Panel technika</h3>
+                <p>Mobilne wsparcie dla pracowników terenowych do wprowadzania odczytów z trasy.</p>
+            </div>
+            <div class="card">
+                <span class="icon">👨‍💼</span>
+                <h3>Panel administratora</h3>
+                <p>Pełna kontrola nad użytkownikami, fakturami i komunikacją ze społecznością.</p>
+            </div>
+            <div class="card">
+                <span class="icon">💰</span>
+                <h3>Automatyczne faktury</h3>
+                <p>Błyskawiczne generowanie dokumentów księgowych na podstawie aktualnych odczytów.</p>
+            </div>
+        </div>
+
+        <div class="cta-section">
+            <h3 style="color: #1a5276; margin-bottom: 20px; font-size: 24px;">Dołącz do cyfrowej rewolucji wodociągowej</h3>
+            <a href="/logowanie" class="btn">Zaloguj się do e-BOK</a>
+            <a href="/rejestracja" class="btn btn-outline">Załóż nowe konto</a>
+            <p style="margin-top: 15px; font-size: 14px; color: #7f8c8d;">System dedykowany dla mieszkańców oraz autoryzowanych pracowników.</p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p style="font-size: 12px; opacity: 0.7;">bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+</body>
+</html>
+>>>>>>> naprawiona_mapa_i_nr_licznika

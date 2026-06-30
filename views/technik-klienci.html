@@ -1,1 +1,185 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="pl"><body><h1>Lista Adresów do Odwiedzenia</h1><p>Jesteś: Technik</p><a href="/technik">Wróć</a></body></html>
+=======
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Lista Adresów / Klienci</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        th, td { padding: 15px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #1a5276; color: white; font-weight: bold; }
+        tr:hover { background-color: #f8fcfd; }
+        
+        .status-badge { padding: 6px 12px; border-radius: 15px; font-size: 0.85em; font-weight: bold; display: inline-block; }
+        .status-ok { background: #d4edda; color: #155724; }
+        .status-brak { background: #f8d7da; color: #721c24; }
+        .status-oczekuje { background: #fff3cd; color: #856404; }
+        
+        .action-btn { 
+            background: #3498db; color: white; border: none; padding: 8px 16px; 
+            border-radius: 4px; text-decoration: none; font-size: 0.9em; cursor: pointer; font-weight: bold; display: inline-block; transition: background 0.2s; margin-right: 5px;
+        }
+        .action-btn:hover { filter: brightness(90%); }
+        .btn-green { background: #27ae60; }
+        .btn-purple { background: #9b59b6; }
+        .btn-orange { background: #e67e22; }
+        .disabled { background: #bdc3c7 !important; color: #7f8c8d !important; cursor: not-allowed; pointer-events: none; }
+
+        .btn-back { background: #6c757d; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 20px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - Lista Adresów / Klienci</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/technik">Dashboard</a>
+        <a href="/technik/mapa">Mapa Tras Odczytowych</a>
+        <a href="/technik/klienci" style="background: #1a5276;">Lista Adresów / Klienci</a>
+        <a href="/technik/wprowadz">Wprowadzanie Odczytów</a>
+        <a href="/technik/raportuj">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section">
+            <h2 class="section-title" style="color: #1a5276; margin-bottom: 20px; border-bottom: 2px solid #3498db; padding-bottom: 10px;">Harmonogram Odczytów (Bieżący Miesiąc)</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Adres Nieruchomości</th>
+                        <th>Numer Licznika (SN)</th>
+                        <th>Wartość (m³)</th>
+                        <th>Status Weryfikacji</th>
+                        <th>Akcje</th>
+                    </tr>
+                </thead>
+                <tbody id="klienciTbody">
+                    <tr><td colspan="5" style="text-align: center; padding: 30px; font-style: italic; color: #7f8c8d;">Pobieranie bazy adresowej z serwera...</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div style="text-align: center;">
+            <a href="/technik" class="btn-back">← Wróć do Dashboardu</a>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p style="font-size: 12px; margin-top: 5px; opacity: 0.8;">Wsparcie IT dla pracowników: it@aquaflow.jaworzno.pl | 32 123 45 99</p>
+    </div>
+    
+    <script>
+        // Główna funkcja pobierająca listę klientów
+        async function zaladujKlientow() {
+            try {
+                const odpowiedz = await fetch('/api/technik/liczniki');
+                if (!odpowiedz.ok) throw new Error('Błąd pobierania danych z bazy');
+                
+                const liczniki = await odpowiedz.json();
+                const tabela = document.getElementById('klienciTbody');
+                tabela.innerHTML = ''; 
+
+                if (liczniki.length === 0) {
+                    tabela.innerHTML = '<tr><td colspan="5" style="text-align: center;">Brak liczników przydomowych w systemie.</td></tr>';
+                    return;
+                }
+
+                liczniki.forEach(licznik => {
+                    const wiersz = document.createElement('tr');
+                    
+                    let wartoscOdczytu = '<span style="color: #e74c3c; font-weight: bold;">Brak</span>';
+                    let statusHtml = '';
+                    let przyciskHtml = '';
+
+                    // Jeśli mamy jakikolwiek odczyt w tym miesiącu (od mieszkańca lub inkasenta)
+                    if (licznik.aktualny_odczyt_id) {
+                        wartoscOdczytu = `<strong>${parseFloat(licznik.aktualny_odczyt_wartosc).toFixed(2)}</strong>`;
+                        
+                        if (licznik.czy_zweryfikowany) {
+                            // STAN 1: Odczyt jest już zatwierdzony
+                            statusHtml = '<span class="status-badge status-ok">✅ Zatwierdzony</span>';
+                            przyciskHtml = '<button class="action-btn disabled">Gotowe</button>';
+                        } else {
+                            // STAN 2: Odczyt dodany przez mieszkańca - czeka na weryfikację
+                            statusHtml = '<span class="status-badge status-oczekuje">⏳ Do weryfikacji</span>';
+                            
+                            // Tworzymy przycisk do zdjęcia, jeśli mieszkaniec je załączył
+                            const zdjecieBtn = licznik.zdjecie_url 
+                                ? `<a href="${licznik.zdjecie_url}" target="_blank" class="action-btn btn-purple">📸 Zdjęcie</a>` 
+                                : '';
+
+                            przyciskHtml = `
+                                <button onclick="zatwierdzOdczyt(${licznik.aktualny_odczyt_id}, ${licznik.id}, ${licznik.aktualny_odczyt_wartosc})" class="action-btn btn-green">✔️ Zatwierdź</button>
+                                ${zdjecieBtn}
+                            `;
+                        }
+                    } else {
+                        // STAN 3: Całkowity brak odczytu - Inkasent musi wpisać sam
+                        statusHtml = '<span class="status-badge status-brak">⚠️ Brak odczytu</span>';
+                        przyciskHtml = `<a href="/technik/wprowadz?meterId=${licznik.id}" class="action-btn btn-orange">📝 Wprowadź stan</a>`;
+                    }
+
+                    wiersz.innerHTML = `
+                        <td><strong>${licznik.adres}</strong></td>
+                        <td>${licznik.numer_licznika}</td>
+                        <td>${wartoscOdczytu}</td>
+                        <td>${statusHtml}</td>
+                        <td>${przyciskHtml}</td>
+                    `;
+                    
+                    tabela.appendChild(wiersz);
+                });
+
+            } catch (error) {
+                console.error('Wystąpił błąd:', error);
+                document.getElementById('klienciTbody').innerHTML = `
+                    <tr><td colspan="5" style="text-align: center; color: red; font-weight: bold;">Nie udało się połączyć z serwerem bazodanowym.</td></tr>
+                `;
+            }
+        }
+
+        // Nowa funkcja do akceptacji odczytu przez technika
+        async function zatwierdzOdczyt(readingId, meterId, wartosc) {
+            if (!confirm(`Czy na pewno chcesz ostatecznie zatwierdzić ten odczyt (${wartosc} m³)?`)) return;
+
+            try {
+                // Wysyłamy żądanie do endpointu technika (postOdczyt.js)
+                const odp = await fetch('/api/technik/odczyty', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        reading_id: readingId, 
+                        meter_id: meterId, 
+                        value: wartosc 
+                    })
+                });
+
+                const wynik = await odp.json();
+
+                if (!odp.ok) {
+                    throw new Error(wynik.error || 'Wystąpił błąd podczas zatwierdzania.');
+                }
+
+                alert('✅ ' + wynik.message);
+                zaladujKlientow(); // Automatyczne odświeżenie tabeli po zatwierdzeniu
+
+            } catch (error) {
+                alert('❌ Błąd: ' + error.message);
+            }
+        }
+
+        // Start skryptu po załadowaniu strony
+        document.addEventListener('DOMContentLoaded', zaladujKlientow);
+    </script>
+</body>
+</html>
+>>>>>>> naprawiona_mapa_i_nr_licznika

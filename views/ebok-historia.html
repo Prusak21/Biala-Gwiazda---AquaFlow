@@ -1,1 +1,190 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="pl"><body><h1>Historia Zużycia (Wykresy)</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+=======
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Historia Zużycia</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        table { width: 100%; border-collapse: collapse; background: white; margin-top: 20px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #2980b9; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+        
+        .charts-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 30px; }
+        .chart-container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        @media (max-width: 768px) { .charts-grid { grid-template-columns: 1fr; } }
+        
+        .empty-row { text-align: center; font-style: italic; color: #7f8c8d; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia" style="background: #1a5276;">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+        
+        <h2 class="page-title">Twoje podsumowanie</h2>
+
+        <div class="charts-grid">
+            <div class="chart-container">
+                <h3 style="text-align: center; color: #2c3e50; margin-top: 0;">Zużycie wody (m³)</h3>
+                <canvas id="waterChart"></canvas> 
+            </div>
+            
+            <div class="chart-container">
+                <h3 style="text-align: center; color: #2c3e50; margin-top: 0;">Wysokość rachunków (PLN brutto)</h3>
+                <canvas id="moneyChart"></canvas>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="page-title">Szczegółowe zestawienie</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Miesiąc rozliczeniowy</th>
+                        <th>Zużycie (m³)</th>
+                        <th>Kwota netto</th>
+                        <th>Kwota brutto</th>
+                    </tr>
+                </thead>
+                <tbody id="historia-tbody">
+                    <tr><td colspan="4" class="empty-row">Ładowanie danych historycznych...</td></tr>
+                </tbody>
+            </table>
+        </div>
+
+        <a href="/ebok" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <script>
+        // Słownik miesięcy do ładnego formatowania
+        const miesiacePL = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec', 'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'];
+
+        async function zaladujHistorie() {
+            try {
+                const odpowiedz = await fetch('/api/ebok/historia');
+                if (!odpowiedz.ok) throw new Error('Błąd serwera');
+                const dane = await odpowiedz.json();
+
+                const tabelaTbody = document.getElementById('historia-tbody');
+                tabelaTbody.innerHTML = '';
+
+                if (dane.length === 0) {
+                    tabelaTbody.innerHTML = '<tr><td colspan="4" class="empty-row">Brak historii rozliczeń dla tego konta.</td></tr>';
+                    return;
+                }
+
+                // 1. PRZYGOTOWANIE DANYCH DO WYKRESÓW (Od najstarszych do najnowszych)
+                const etykietyMiesiecy = [];
+                const daneZuzycie = [];
+                const daneKoszty = [];
+
+                dane.forEach(wiersz => {
+                    const dataObj = new Date(wiersz.period_end);
+                    // Format np. "03.2026"
+                    const m = (dataObj.getMonth() + 1).toString().padStart(2, '0');
+                    const y = dataObj.getFullYear();
+                    
+                    etykietyMiesiecy.push(`${m}.${y}`);
+                    daneZuzycie.push(parseFloat(wiersz.consumption_m3).toFixed(2));
+                    daneKoszty.push(parseFloat(wiersz.kwota_brutto).toFixed(2));
+                });
+
+                // 2. WYPEŁNIANIE TABELI (Odwracamy tablicę, żeby najnowsze miesiące były na samej górze)
+                const daneDoTabeli = [...dane].reverse();
+
+                daneDoTabeli.forEach(wiersz => {
+                    const dataObj = new Date(wiersz.period_end);
+                    const nazwaMiesiaca = `${miesiacePL[dataObj.getMonth()]} ${dataObj.getFullYear()}`;
+                    
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${nazwaMiesiaca}</strong></td>
+                        <td>${parseFloat(wiersz.consumption_m3).toFixed(2)}</td>
+                        <td>${parseFloat(wiersz.kwota_netto).toFixed(2)} zł</td>
+                        <td><strong>${parseFloat(wiersz.kwota_brutto).toFixed(2)} zł</strong></td>
+                    `;
+                    tabelaTbody.appendChild(tr);
+                });
+
+                // 3. RYSOWANIE WYKRESÓW (Chart.js)
+                
+                // Wykres słupkowy - Woda
+                new Chart(document.getElementById('waterChart'), {
+                    type: 'bar',
+                    data: {
+                        labels: etykietyMiesiecy,
+                        datasets: [{
+                            label: 'Zużycie (m³)',
+                            data: daneZuzycie,
+                            backgroundColor: '#3498db',
+                            borderRadius: 4
+                        }]
+                    },
+                    options: { 
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+
+                // Wykres liniowy - Pieniądze
+                new Chart(document.getElementById('moneyChart'), {
+                    type: 'line',
+                    data: {
+                        labels: etykietyMiesiecy,
+                        datasets: [{
+                            label: 'Kwota brutto (zł)',
+                            data: daneKoszty,
+                            borderColor: '#e74c3c',
+                            backgroundColor: 'rgba(231, 76, 60, 0.2)',
+                            fill: true,
+                            tension: 0.3, // Zaokrągla linię (krzywa Beziera)
+                            pointBackgroundColor: '#c0392b',
+                            pointRadius: 4
+                        }]
+                    },
+                    options: { 
+                        responsive: true,
+                        scales: { y: { beginAtZero: true } }
+                    }
+                });
+
+            } catch (error) {
+                console.error('Błąd:', error);
+                document.getElementById('historia-tbody').innerHTML = `
+                    <tr><td colspan="4" class="empty-row" style="color: red;">Nie udało się załadować danych historycznych.</td></tr>
+                `;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', zaladujHistorie);
+    </script>
+</body>
+</html>
+>>>>>>> naprawiona_mapa_i_nr_licznika

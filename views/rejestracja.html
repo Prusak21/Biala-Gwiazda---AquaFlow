@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <title>AquaFlow - Rejestracja</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body class="bg-light d-flex align-items-center justify-content-center" style="height: 100vh;">
+    <div class="card shadow p-4" style="width: 100%; max-width: 400px;">
+        <h3 class="text-center mb-4 text-primary">Rejestracja w e-BOK</h3>
+        
+        <div id="error-alert" class="alert alert-danger d-none text-center" role="alert"></div>
+        <div id="success-alert" class="alert alert-success d-none text-center" role="alert"></div>
+
+        <form id="registerForm">
+            <div class="mb-3">
+                <label class="form-label">Adres e-mail</label>
+                <input type="email" id="email" class="form-control" placeholder="jan.nowak@gmail.com" required>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label">Hasło</label>
+                <input type="password" id="haslo" class="form-control" placeholder="****" required>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label">Powtórz hasło</label>
+                <input type="password" id="powtorz_haslo" class="form-control" placeholder="****" required>
+            </div>
+
+            <div class="mb-4">
+                <label class="form-label">Numer seryjny licznika</label>
+                <input type="text" id="numer_licznika" class="form-control" placeholder="np. M-NOWAK-001" required>
+                <div class="form-text">Numer znajdziesz na obudowie wodomierza lub w umowie z AquaFlow.</div>
+            </div>
+
+            <input type="hidden" id="role_id" value="3">
+
+            <button type="submit" class="btn btn-primary w-100">Załóż konto</button>
+        </form>
+        
+        <div class="mt-4 text-center">
+            <a href="/logowanie" class="text-decoration-none d-block mb-2">Masz już konto? Zaloguj się</a>
+            <a href="/" class="text-decoration-none text-muted small">Wróć na stronę główną</a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const haslo = document.getElementById('haslo').value;
+            const powtorz_haslo = document.getElementById('powtorz_haslo').value;
+            const role_id = document.getElementById('role_id').value;
+            const numer_licznika = document.getElementById('numer_licznika').value;
+            
+            const errorAlert = document.getElementById('error-alert');
+            const successAlert = document.getElementById('success-alert');
+            
+            // Ukrywamy powiadomienia na start
+            errorAlert.classList.add('d-none');
+            successAlert.classList.add('d-none');
+
+            // Szybka walidacja haseł na froncie
+            if (haslo !== powtorz_haslo) {
+                errorAlert.innerText = 'Podane hasła nie są identyczne!';
+                errorAlert.classList.remove('d-none');
+                return;
+            }
+
+            try {
+                const odpowiedz = await fetch('/zarejestruj', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        email: email, 
+                        haslo: haslo, 
+                        powtorz_haslo: powtorz_haslo, 
+                        role_id: role_id,
+                        numer_licznika: numer_licznika
+                    })
+                });
+
+                const dane = await odpowiedz.json();
+
+                if (!odpowiedz.ok) throw new Error(dane.error || 'Wystąpił nieznany błąd.');
+
+                // Sukces
+                successAlert.innerText = dane.message;
+                successAlert.classList.remove('d-none');
+                document.getElementById('registerForm').reset();
+
+                // Automatyczne przekierowanie do logowania po 2 sekundach
+                setTimeout(() => {
+                    window.location.href = '/logowanie';
+                }, 2000);
+
+            } catch (error) {
+                errorAlert.innerText = error.message;
+                errorAlert.classList.remove('d-none');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,1 +1,163 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="pl"><body><h1>Zgłaszanie Awarii na Przyłączu</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+=======
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Zgłaszanie Awarii</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input[type="text"], .form-group input[type="password"], .form-group select, .form-group textarea { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em;
+        }
+        .form-group textarea { height: 100px; resize: vertical; }
+        .submit-btn { background: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1em; width: 100%; font-weight: bold; }
+        .submit-btn:hover { background: #c0392b; }
+        .file-drop-area { display: block; padding: 20px; border: 2px dashed #bdc3c7; text-align: center; background: #ecf0f1; cursor: pointer; border-radius: 4px; }
+        .file-input { display: none; }
+        
+        #komunikat { margin-bottom: 20px; padding: 15px; border-radius: 5px; display: none; text-align: center; font-weight: bold; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+       <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie" style="background: #1a5276;">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="section" style="max-width: 600px; margin: 0 auto;">
+            <h2 class="page-title">⚠️ Zgłoś Awarię lub Usterkę</h2>
+            
+            <div class="info-box">
+                <strong>Ważne:</strong> Ze względów bezpieczeństwa i w celu uniknięcia fałszywych zgłoszeń, prosimy o podanie numeru licznika oraz weryfikację tożsamości poprzez podanie numeru PESEL lub numeru Dowodu Osobistego powiązanego z umową.
+            </div>
+
+            <!-- Kontener na komunikaty -->
+            <div id="komunikat"></div>
+
+            <form id="zgloszenieForm">
+                
+                <div class="form-group">
+                    <label class="tytul-pola" for="typ-awarii">Rodzaj problemu:</label>
+                    <select id="typ-awarii" required>
+                        <option value="">-- Wybierz z listy --</option>
+                        <option value="brak_wody">Brak wody w kranie</option>
+                        <option value="cisnienie">Bardzo słabe ciśnienie</option>
+                        <option value="wyciek_licznik">Wyciek w okolicach wodomierza</option>
+                        <option value="jakosc">Brudna woda / Zła jakość</option>
+                        <option value="inne">Inne</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola" for="nr-licznika">Numer Licznika (ID):</label>
+                    <input type="text" id="nr-licznika" placeholder="np. M-NOWAK-001" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola" for="weryfikacja">Numer PESEL lub Numer Dowodu Osobistego:</label>
+                    <input type="password" id="weryfikacja" placeholder="Wprowadź dane do autoryzacji" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola" for="opis">Dodatkowy opis sytuacji:</label>
+                    <textarea id="opis" placeholder="Opisz dokładnie co się dzieje..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="tytul-pola">Zdjęcie usterki (Opcjonalne):</label>
+                    <label class="file-drop-area">
+                        <input type="file" id="zdjecieInput" class="file-input" accept="image/*">
+                        <span id="zdjecieLabel">📸 Kliknij tutaj, aby wybrać zdjęcie</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn">Wyślij Zgłoszenie Awarii</button>
+            </form>
+        </div>
+
+        <a href="/ebok" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>Pogotowie wodociągowe: 994 | bok@aquaflow.jaworzno.pl</p>
+    </div>
+    
+    <script>
+        // Obsługa wyświetlania nazwy wybranego pliku
+        document.getElementById('zdjecieInput').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                document.getElementById('zdjecieLabel').innerText = "✅ Plik dodany: " + e.target.files[0].name;
+            }
+        });
+
+        // Obsługa wysyłania zgłoszenia
+        document.getElementById('zgloszenieForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const typAwarii = document.getElementById('typ-awarii');
+            const typNazwa = typAwarii.options[typAwarii.selectedIndex].text;
+            const nrLicznika = document.getElementById('nr-licznika').value;
+            const pesel = document.getElementById('weryfikacja').value;
+            const opis = document.getElementById('opis').value;
+            
+            const oknoKomunikatu = document.getElementById('komunikat');
+
+            try {
+                const odpowiedz = await fetch('/api/ebok/awarie', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ 
+                        typ: typNazwa, 
+                        nrLicznika: nrLicznika, 
+                        pesel: pesel, 
+                        opis: opis 
+                    })
+                });
+
+                const dane = await odpowiedz.json();
+
+                if (!odpowiedz.ok) throw new Error(dane.error || 'Wystąpił nieoczekiwany błąd.');
+
+                // Sukces
+                oknoKomunikatu.className = 'alert-success';
+                oknoKomunikatu.innerHTML = `✅ ${dane.message}`;
+                oknoKomunikatu.style.display = 'block';
+                
+                // Czyszczenie formularza
+                document.getElementById('zgloszenieForm').reset();
+                document.getElementById('zdjecieLabel').innerText = "📸 Kliknij tutaj, aby wybrać zdjęcie";
+
+            } catch (error) {
+                // Błąd weryfikacji (np. zły numer licznika)
+                oknoKomunikatu.className = 'alert-error';
+                oknoKomunikatu.innerHTML = `❌ Błąd: ${error.message}`;
+                oknoKomunikatu.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
+>>>>>>> naprawiona_mapa_i_nr_licznika

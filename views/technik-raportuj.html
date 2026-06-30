@@ -1,2 +1,169 @@
+<<<<<<< HEAD
 
 <!DOCTYPE html><html lang="pl"><body><h1>Zgłoś Awarię w Terenie (+ Foto i Pinezka)</h1><p>Jesteś: Technik</p><a href="/technik">Wróć</a></body></html>
+=======
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Raportowanie Awarii</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input[type="text"], .form-group select, .form-group textarea { 
+            width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; font-size: 1em; margin-bottom: 10px;
+        }
+        .form-group textarea { height: 100px; resize: vertical; }
+        .gps-btn { background: #3498db; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer; }
+        .gps-btn:hover { background: #2980b9; }
+        .btn-submit { background: #e74c3c; color: white; padding: 12px 20px; border: none; border-radius: 4px; cursor: pointer; font-size: 1.1em; width: 100%; font-weight: bold; }
+        .btn-submit:hover { background: #c0392b; }
+        .file-drop-area { display: block; padding: 20px; border: 2px dashed #bdc3c7; text-align: center; background: #ecf0f1; cursor: pointer; border-radius: 4px; }
+        
+        #komunikat { margin-bottom: 20px; padding: 15px; border-radius: 5px; display: none; text-align: center; font-weight: bold; }
+        .alert-success { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .alert-error { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>AquaFlow - Raportowanie Awarii</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+    <div class="nav">
+        <a href="/technik">Dashboard</a>
+        <a href="/technik/mapa">Mapa Tras Odczytowych</a>
+        <a href="/technik/klienci">Lista Adresów / Klienci</a>
+        <a href="/technik/wprowadz">Wprowadzanie Odczytów</a>
+        <a href="/technik/raportuj" style="background: #1a5276;">Raportowanie Awarii</a>
+    </div>
+    
+    <div class="container">
+        <div class="user-badge technik">Rola: Pracownik Terenowy</div>
+        
+        <div class="section" style="max-width: 600px; margin: 0 auto;">
+            
+            <div id="komunikat"></div>
+
+            <form id="awariaForm">
+                <div class="form-group">
+                    <label>Lokalizacja GPS (Wymagane do mapy):</label>
+                    <input type="text" id="gpsData" placeholder="Kliknij przycisk poniżej, aby pobrać współrzędne" readonly required>
+                    <input type="hidden" id="latData">
+                    <input type="hidden" id="lngData">
+                    <button type="button" class="gps-btn" onclick="pobierzGPS()">📍 Pobierz moją lokalizację</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Rodzaj usterki:</label>
+                    <select id="rodzajUsterki" required>
+                        <option value="">Wybierz z listy...</option>
+                        <option value="Uszkodzony wodomierz">Uszkodzony wodomierz</option>
+                        <option value="Zerwana plomba">Zerwana plomba</option>
+                        <option value="Wyciek / pęknięta rura">Wyciek / pęknięta rura</option>
+                        <option value="Nielegalne przyłącze">Nielegalne przyłącze</option>
+                        <option value="Inne">Inne</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Szczegółowy opis z terenu:</label>
+                    <textarea id="opisUsterki" placeholder="Opisz dokładnie sytuację..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Dokumentacja zdjęciowa:</label>
+                    <label class="file-drop-area">
+                        <input type="file" id="zdjecieInput" accept="image/*" style="display:none;">
+                        <span id="zdjecieLabel">📸 Kliknij, aby wybrać zdjęcie</span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit">Wyślij Raport do Centrali</button>
+            </form>
+        </div>
+        
+        <a href="/technik" class="btn-back">← Wróć do Dashboardu</a>
+    </div>
+
+    <script>
+        // Pokazywanie nazwy wybranego pliku
+        document.getElementById('zdjecieInput').addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                document.getElementById('zdjecieLabel').innerText = "✅ Wybrano: " + e.target.files[0].name;
+            }
+        });
+
+        // Pobieranie lokalizacji z przeglądarki
+        function pobierzGPS() {
+            const poleTekstowe = document.getElementById('gpsData');
+            
+            if (!navigator.geolocation) {
+                poleTekstowe.value = 'Twoja przeglądarka nie obsługuje GPS.';
+                return;
+            }
+
+            poleTekstowe.value = 'Szukanie satelitów...';
+
+            navigator.geolocation.getCurrentPosition(
+                // Sukces
+                (position) => {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    document.getElementById('latData').value = lat;
+                    document.getElementById('lngData').value = lng;
+                    poleTekstowe.value = `Szerokość: ${lat.toFixed(5)}, Długość: ${lng.toFixed(5)}`;
+                },
+                // Błąd
+                (error) => {
+                    poleTekstowe.value = '';
+                    alert('Nie udało się pobrać lokalizacji. Upewnij się, że przeglądarka ma odpowiednie uprawnienia.');
+                }
+            );
+        }
+
+        // Wysyłanie formularza na serwer
+        document.getElementById('awariaForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const lat = document.getElementById('latData').value;
+            const lng = document.getElementById('lngData').value;
+            const rodzaj = document.getElementById('rodzajUsterki').value;
+            const opis = document.getElementById('opisUsterki').value;
+            const oknoKomunikatu = document.getElementById('komunikat');
+
+            try {
+                const odpowiedz = await fetch('/api/technik/awarie', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ lat: lat, lng: lng, rodzaj: rodzaj, opis: opis })
+                });
+
+                const dane = await odpowiedz.json();
+
+                if (!odpowiedz.ok) throw new Error(dane.error || 'Błąd zapisu');
+
+                oknoKomunikatu.className = 'alert-success';
+                oknoKomunikatu.innerHTML = `✅ ${dane.message}`;
+                oknoKomunikatu.style.display = 'block';
+                
+                // Czyszczenie formularza po sukcesie
+                document.getElementById('awariaForm').reset();
+                document.getElementById('zdjecieLabel').innerText = "📸 Kliknij, aby wybrać zdjęcie";
+                document.getElementById('latData').value = "";
+                document.getElementById('lngData').value = "";
+
+            } catch (error) {
+                oknoKomunikatu.className = 'alert-error';
+                oknoKomunikatu.innerHTML = `❌ ${error.message}`;
+                oknoKomunikatu.style.display = 'block';
+            }
+        });
+    </script>
+</body>
+</html>
+>>>>>>> naprawiona_mapa_i_nr_licznika

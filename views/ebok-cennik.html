@@ -1,1 +1,161 @@
+<<<<<<< HEAD
 <!DOCTYPE html><html lang="pl"><body><h1>Cennik e-BOK</h1><p>Jesteś: Mieszkaniec</p><a href="/ebok">Wróć</a></body></html>
+=======
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AquaFlow - Cennik</title>
+    <link rel="stylesheet" href="/style.css">
+    <style>
+        table { width: 100%; border-collapse: collapse; background: white; margin-bottom: 25px; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background-color: #2980b9; color: white; }
+        tr:hover { background-color: #f5f5f5; }
+        
+        .aktywna-taryfa { font-weight: bold; color: #27ae60; }
+        .archiwalna-taryfa { color: #7f8c8d; }
+        
+        .data-modyfikacji { text-align: right; font-size: 0.9em; color: #7f8c8d; font-style: italic; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💧 AquaFlow - e-BOK</h1>
+        <a href="/wyloguj" class="logout-btn">Wyloguj</a>
+    </div>
+
+      <div class="nav">
+        <a href="/ebok">Dashboard</a>
+        <a href="/ebok/cennik" style="background: #1a5276;">Cennik</a>
+        <a href="/ebok/komunikaty">Aktualności / Komunikaty</a>
+        <a href="/ebok/odczyt">Odczyt Licznika</a>
+        <a href="/ebok/historia">Historia Zużycia i Rachunków</a>
+        <a href="/ebok/faktury">e-Faktury i Płatności</a>
+        <a href="/ebok/awarie">Zgłaszanie Awarii</a>
+        <a href="/ebok/archiwum">Archiwum Awarii</a>
+        <a href="/ebok/lojalnosc">Program Lojalnościowy</a>
+    </div>
+
+    <div class="container">
+        <div class="user-badge">Jesteś: Mieszkaniec zalogowany</div>
+
+        <div class="info-box">
+            <strong>Informacja:</strong> Poniższe ceny są kwotami netto. Do faktury doliczany jest podatek VAT (8%).
+        </div>
+        
+        <h2 class="page-title">Taryfy za dostarczanie wody</h2>
+        <table id="cennikTable">
+            <thead>
+                <tr>
+                    <th>Taryfa</th>
+                    <th>Cena netto za m³</th>
+                    <th>Okres obowiązywania</th>
+                </tr>
+            </thead>
+            <tbody id="taryfyBody">
+                <tr>
+                    <td colspan="3" style="text-align: center;">Ładowanie cennika...</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2 class="page-title">Opłaty dodatkowe i abonamentowe</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Rodzaj opłaty</th>
+                    <th>Kwota netto</th>
+                </tr>
+            </thead>
+            <tbody id="oplatyBody">
+                <tr>
+                    <td colspan="2" style="text-align: center;">Ładowanie opłat...</td>
+                </tr>
+            </tbody>
+        </table>
+        
+        <div id="dataModyfikacji" class="data-modyfikacji"></div>
+        
+        <a href="/ebok" class="btn-back">← Wróć do Panelu</a>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2026 AquaFlow - System Gospodarki Wodnej</p>
+        <p>bok@aquaflow.jaworzno.pl | 32 123 45 67</p>
+    </div>
+
+    <script>
+        // Funkcja do ładnego formatowania daty z bazy danych
+        function formatujDate(dataZBazy) {
+            if (!dataZBazy) return 'Nadal obowiązuje';
+            const data = new Date(dataZBazy);
+            return data.toLocaleDateString('pl-PL');
+        }
+
+        // Funkcja do formatowania ceny (dodanie zł i 2 miejsc po przecinku)
+        function formatujCene(cena) {
+            return parseFloat(cena).toFixed(2) + ' zł';
+        }
+
+        async function zaladujCennik() {
+            try {
+                const odpowiedz = await fetch('/api/ebok/cennik');
+                if (!odpowiedz.ok) throw new Error('Błąd pobierania danych');
+                
+                const dane = await odpowiedz.json();
+                
+                // 1. WYPEŁNIANIE TABELI TARYF
+                const taryfyTbody = document.getElementById('taryfyBody');
+                taryfyTbody.innerHTML = '';
+                
+                if (dane.taryfy.length === 0) {
+                    taryfyTbody.innerHTML = '<tr><td colspan="3" style="text-align: center;">Brak zdefiniowanych taryf w systemie.</td></tr>';
+                } else {
+                    dane.taryfy.forEach(taryfa => {
+                        const wiersz = document.createElement('tr');
+                        
+                        // Sprawdzamy, czy taryfa jest nadal aktualna (brak daty końcowej)
+                        const jestAktywna = taryfa.wazne_do === null;
+                        const klasaTekstu = jestAktywna ? 'aktywna-taryfa' : 'archiwalna-taryfa';
+                        const tekstOkresu = `${formatujDate(taryfa.wazne_od)} - ${formatujDate(taryfa.wazne_do)}`;
+
+                        wiersz.innerHTML = `
+                            <td class="${klasaTekstu}">${taryfa.nazwa} ${jestAktywna ? '(Aktualna)' : ''}</td>
+                            <td class="${klasaTekstu}"><strong>${formatujCene(taryfa.cena)}</strong></td>
+                            <td class="${klasaTekstu}">${tekstOkresu}</td>
+                        `;
+                        taryfyTbody.appendChild(wiersz);
+                    });
+                }
+
+                // 2. WYPEŁNIANIE TABELI OPŁAT
+                const oplatyTbody = document.getElementById('oplatyBody');
+                oplatyTbody.innerHTML = '';
+                
+                dane.oplaty.forEach(oplata => {
+                    const wiersz = document.createElement('tr');
+                    wiersz.innerHTML = `
+                        <td>${oplata.nazwa}</td>
+                        <td><strong>${formatujCene(oplata.kwota)}</strong></td>
+                    `;
+                    oplatyTbody.appendChild(wiersz);
+                });
+
+                // 3. AKTUALIZACJA DATY MODYFIKACJI NA DOLE EKRANU
+                const dzisiaj = new Date().toLocaleDateString('pl-PL');
+                document.getElementById('dataModyfikacji').innerText = `Stan cennika na dzień: ${dzisiaj}`;
+
+            } catch (error) {
+                console.error('Błąd:', error);
+                document.getElementById('taryfyBody').innerHTML = `<tr><td colspan="3" style="text-align: center; color: red;">Nie udało się załadować cennika.</td></tr>`;
+                document.getElementById('oplatyBody').innerHTML = `<tr><td colspan="2" style="text-align: center; color: red;">Nie udało się załadować opłat.</td></tr>`;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', zaladujCennik);
+    </script>
+</body>
+</html>
+>>>>>>> naprawiona_mapa_i_nr_licznika

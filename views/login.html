@@ -12,6 +12,12 @@
         <div id="error-alert" class="alert alert-danger d-none text-center" role="alert">
             Nieprawidłowy adres e-mail lub hasło.
         </div>
+<<<<<<< HEAD
+=======
+        <div id="success-alert" class="alert alert-success d-none text-center" role="alert">
+            Konto zostało założone! Możesz się teraz zalogować.
+        </div>
+>>>>>>> naprawiona_mapa_i_nr_licznika
 
         <form action="/zaloguj" method="POST">
             <div class="mb-3">
@@ -24,17 +30,39 @@
             </div>
             <button type="submit" class="btn btn-primary w-100">Zaloguj</button>
         </form>
+<<<<<<< HEAD
         
         <div class="mt-3 text-center">
             <a href="/" class="text-decoration-none">Wróć na stronę główną</a>
+=======
+
+        <div class="mt-3 text-center">
+            <a href="/rejestracja" class="text-decoration-none">Zarejestruj się</a>
+        </div>
+        <div class="mt-3 text-center">
+            <a href="/" class="text-decoration-none text-muted small">Wróć na stronę główną</a>
+>>>>>>> naprawiona_mapa_i_nr_licznika
         </div>
     </div>
 
     <script>
         const urlParams = new URLSearchParams(window.location.search);
+<<<<<<< HEAD
         if (urlParams.get('error') === '1') {
             document.getElementById('error-alert').classList.remove('d-none');
             // Czyści pasek adresu, żeby błąd nie wisiał po odświeżeniu
+=======
+        
+        // Obsługa błędu logowania
+        if (urlParams.get('error') === '1') {
+            document.getElementById('error-alert').classList.remove('d-none');
+            window.history.replaceState({}, document.title, "/logowanie");
+        }
+        
+        // Obsługa komunikatu po udanej rejestracji
+        if (urlParams.get('registered') === '1') {
+            document.getElementById('success-alert').classList.remove('d-none');
+>>>>>>> naprawiona_mapa_i_nr_licznika
             window.history.replaceState({}, document.title, "/logowanie");
         }
     </script>
